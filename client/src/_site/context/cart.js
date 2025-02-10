@@ -9,11 +9,7 @@ const CartProvider = ({ children }) => {
     if (existingCartItem) setCart(JSON.parse(existingCartItem));
   }, []);
 
-  return (
-    <CartContext.Provider value={[cart, setCart]}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={[cart, setCart]}>{children}</CartContext.Provider>;
 };
 
 // custom hook

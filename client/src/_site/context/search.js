@@ -7,11 +7,7 @@ const SearchProvider = ({ children }) => {
     results: [],
   });
 
-  return (
-    <SearchContext.Provider value={[auth, setAuth]}>
-      {children}
-    </SearchContext.Provider>
-  );
+  return <SearchContext.Provider value={[auth, setAuth]}>{children}</SearchContext.Provider>;
 };
 
 // custom hook

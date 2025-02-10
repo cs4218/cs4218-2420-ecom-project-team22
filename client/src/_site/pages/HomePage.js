@@ -109,22 +109,14 @@ const HomePage = () => {
   return (
     <Layout title={"ALL Products - Best offers "}>
       {/* banner image */}
-      <img
-        src="/images/Virtual.png"
-        className="banner-img"
-        alt="bannerimage"
-        width={"100%"}
-      />
+      <img src="/images/Virtual.png" className="banner-img" alt="bannerimage" width={"100%"} />
       {/* banner image */}
       <div className="container-fluid row mt-3 home-page">
         <div className="col-md-3 filters">
           <h4 className="text-center">Filter By Category</h4>
           <div className="d-flex flex-column">
             {categories?.map((c) => (
-              <Checkbox
-                key={c._id}
-                onChange={(e) => handleFilter(e.target.checked, c._id)}
-              >
+              <Checkbox key={c._id} onChange={(e) => handleFilter(e.target.checked, c._id)}>
                 {c.name}
               </Checkbox>
             ))}
@@ -141,10 +133,7 @@ const HomePage = () => {
             </Radio.Group>
           </div>
           <div className="d-flex flex-column">
-            <button
-              className="btn btn-danger"
-              onClick={() => window.location.reload()}
-            >
+            <button className="btn btn-danger" onClick={() => window.location.reload()}>
               RESET FILTERS
             </button>
           </div>
@@ -154,11 +143,7 @@ const HomePage = () => {
           <div className="d-flex flex-wrap">
             {products?.map((p) => (
               <div className="card m-2" key={p._id}>
-                <img
-                  src={`/api/v1/product/product-photo/${p._id}`}
-                  className="card-img-top"
-                  alt={p.name}
-                />
+                <img src={`/api/v1/product/product-photo/${p._id}`} className="card-img-top" alt={p.name} />
                 <div className="card-body">
                   <div className="card-name-price">
                     <h5 className="card-title">{p.name}</h5>
@@ -169,24 +154,16 @@ const HomePage = () => {
                       })}
                     </h5>
                   </div>
-                  <p className="card-text ">
-                    {p.description.substring(0, 60)}...
-                  </p>
+                  <p className="card-text ">{p.description.substring(0, 60)}...</p>
                   <div className="card-name-price">
-                    <button
-                      className="btn btn-info ms-1"
-                      onClick={() => navigate(`/product/${p.slug}`)}
-                    >
+                    <button className="btn btn-info ms-1" onClick={() => navigate(`/product/${p.slug}`)}>
                       More Details
                     </button>
                     <button
                       className="btn btn-dark ms-1"
                       onClick={() => {
                         setCart([...cart, p]);
-                        localStorage.setItem(
-                          "cart",
-                          JSON.stringify([...cart, p])
-                        );
+                        localStorage.setItem("cart", JSON.stringify([...cart, p]));
                         toast.success("Item Added to cart");
                       }}
                     >

@@ -17,9 +17,7 @@ const ProductDetails = () => {
   //getProduct
   const getProduct = async () => {
     try {
-      const { data } = await axios.get(
-        `/api/v1/product/get-product/${params.slug}`
-      );
+      const { data } = await axios.get(`/api/v1/product/get-product/${params.slug}`);
       setProduct(data?.product);
       getSimilarProduct(data?.product._id, data?.product.category._id);
     } catch (error) {
@@ -29,9 +27,7 @@ const ProductDetails = () => {
   //get similar product
   const getSimilarProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(
-        `/api/v1/product/related-product/${pid}/${cid}`
-      );
+      const { data } = await axios.get(`/api/v1/product/related-product/${pid}/${cid}`);
       setRelatedProducts(data?.products);
     } catch (error) {
       console.log(error);
@@ -68,17 +64,11 @@ const ProductDetails = () => {
       <hr />
       <div className="row container similar-products">
         <h4>Similar Products ➡️</h4>
-        {relatedProducts.length < 1 && (
-          <p className="text-center">No Similar Products found</p>
-        )}
+        {relatedProducts.length < 1 && <p className="text-center">No Similar Products found</p>}
         <div className="d-flex flex-wrap">
           {relatedProducts?.map((p) => (
             <div className="card m-2" key={p._id}>
-              <img
-                src={`/api/v1/product/product-photo/${p._id}`}
-                className="card-img-top"
-                alt={p.name}
-              />
+              <img src={`/api/v1/product/product-photo/${p._id}`} className="card-img-top" alt={p.name} />
               <div className="card-body">
                 <div className="card-name-price">
                   <h5 className="card-title">{p.name}</h5>
@@ -89,14 +79,9 @@ const ProductDetails = () => {
                     })}
                   </h5>
                 </div>
-                <p className="card-text ">
-                  {p.description.substring(0, 60)}...
-                </p>
+                <p className="card-text ">{p.description.substring(0, 60)}...</p>
                 <div className="card-name-price">
-                  <button
-                    className="btn btn-info ms-1"
-                    onClick={() => navigate(`/product/${p.slug}`)}
-                  >
+                  <button className="btn btn-info ms-1" onClick={() => navigate(`/product/${p.slug}`)}>
                     More Details
                   </button>
                   {/* <button

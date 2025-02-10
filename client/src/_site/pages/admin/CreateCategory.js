@@ -51,10 +51,7 @@ const CreateCategory = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.put(
-        `/api/v1/category/update-category/${selected._id}`,
-        { name: updatedName }
-      );
+      const { data } = await axios.put(`/api/v1/category/update-category/${selected._id}`, { name: updatedName });
       if (data.success) {
         toast.success(`${updatedName} is updated`);
         setSelected(null);
@@ -71,9 +68,7 @@ const CreateCategory = () => {
   //delete category
   const handleDelete = async (pId) => {
     try {
-      const { data } = await axios.delete(
-        `/api/v1/category/delete-category/${pId}`
-      );
+      const { data } = await axios.delete(`/api/v1/category/delete-category/${pId}`);
       if (data.success) {
         toast.success(`category is deleted`);
 
@@ -95,11 +90,7 @@ const CreateCategory = () => {
           <div className="col-md-9">
             <h1>Manage Category</h1>
             <div className="p-3 w-50">
-              <CategoryForm
-                handleSubmit={handleSubmit}
-                value={name}
-                setValue={setName}
-              />
+              <CategoryForm handleSubmit={handleSubmit} value={name} setValue={setName} />
             </div>
             <div className="w-75">
               <table className="table">
@@ -140,16 +131,8 @@ const CreateCategory = () => {
                 </tbody>
               </table>
             </div>
-            <Modal
-              onCancel={() => setVisible(false)}
-              footer={null}
-              visible={visible}
-            >
-              <CategoryForm
-                value={updatedName}
-                setValue={setUpdatedName}
-                handleSubmit={handleUpdate}
-              />
+            <Modal onCancel={() => setVisible(false)} footer={null} visible={visible}>
+              <CategoryForm value={updatedName} setValue={setUpdatedName} handleSubmit={handleUpdate} />
             </Modal>
           </div>
         </div>

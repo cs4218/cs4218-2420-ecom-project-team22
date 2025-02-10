@@ -15,19 +15,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-    
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '23'
-    
-    - name: Install dependencies
-      run: npm install
 
-    - name: Install client dependencies
-      run: |
-        cd client
-        npm install
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "23"
 
-    - name: Run Jest Tests
-      run: npm test
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install client dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Run Jest Tests
+        run: npm test

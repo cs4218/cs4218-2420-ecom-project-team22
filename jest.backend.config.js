@@ -8,6 +8,8 @@ export default {
   // which test to run
   testMatch: ["<rootDir>/controllers/*.test.js"],
 
+  transform: {},
+
   // jest code coverage
   collectCoverage: true,
   collectCoverageFrom: ["controllers/**"],

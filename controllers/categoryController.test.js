@@ -71,7 +71,7 @@ describe("Create Category Controller Tests", () => {
     req = { body: { name: "health" } };
 
     await createCategoryController(req, res);
-    expect(res.send).toBeCalledWith(500);
+    expect(res.status).toBeCalledWith(500);
     expect(res.send).toBeCalledWith(
       expect.objectContaining({
         success: false,
@@ -86,7 +86,7 @@ describe("Create Category Controller Tests", () => {
     req = { body: { name: "health" } };
 
     await createCategoryController(req, res);
-    expect(res.send).toBeCalledWith(500);
+    expect(res.status).toBeCalledWith(500);
     expect(res.send).toBeCalledWith(
       expect.objectContaining({
         success: false,

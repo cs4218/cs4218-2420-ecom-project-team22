@@ -69,7 +69,7 @@ describe("Update Category Controller Tests", () => {
     };
   });
 
-  test("updating an existing category resolves successfully", async () => {
+  test("Updating an existing category resolves successfully", async () => {
     const mockUpdatedCategory = {
       name: "accessories",
       slug: slugify("accessories"),
@@ -97,7 +97,7 @@ describe("Update Category Controller Tests", () => {
     );
   });
 
-  test("updating a non-existent category results in an error", async () => {
+  test("Updating a non-existent category results in a failed update", async () => {
     req = {
       body: { name: "clothing" },
       param: { id: "ABC" },

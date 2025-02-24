@@ -22,6 +22,16 @@ jest.mock("jsonwebtoken", () => ({
 describe("Register Controller Test", () => {
  let req, res;
 
+ const mockUser = {
+  _id: "65b8d8f4c3a1b98765432101",
+  name: "John Doe",
+  email: "johndoe@example.com",
+  password: "hashedpassword",
+  phone: "123456789",
+  address: { city: "NYC", country: "USA" },
+  answer: "securityAnswer",
+  role: 0,
+};
 
  beforeEach(() => {
    jest.clearAllMocks();
@@ -30,7 +40,7 @@ describe("Register Controller Test", () => {
        name: "John Doe",
        email: "invalid-email",
        password: "password123",
-       phone: "12344000",
+       phone: "invalid-phone",
        address: "123 Street",
        answer: "Football",
      },
@@ -53,6 +63,74 @@ describe("Register Controller Test", () => {
    await registerController(req, res);
    expect(userModel.prototype.save).not.toHaveBeenCalled();
  });
+
+
+ test("user model is not saved for invalid phone", async () => {
+  // specify mock functionality
+  userModel.findOne = jest.fn().mockResolvedValue(null);
+  userModel.prototype.save = jest.fn();
+
+
+  await registerController(req, res);
+  expect(userModel.prototype.save).not.toHaveBeenCalled();
+});
+
+
+test("user is already registered", async () => {
+  req = {
+    body: {
+      name: "John Doe",
+      email: "johndoe@example.com",
+      password: "password123",
+      phone: "123456789",
+      address: "123 Street",
+      answer: "Football",
+    },
+  };
+  // specify mock functionality
+  userModel.findOne = jest.fn().mockResolvedValue(mockUser);
+  userModel.prototype.save = jest.fn();
+
+
+  await registerController(req, res);
+
+  expect(userModel.findOne).toHaveBeenCalledWith({ email: "johndoe@example.com" });
+  expect(userModel.prototype.save).not.toHaveBeenCalled();
+  expect(res.status).toHaveBeenCalledWith(200);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      success: false,
+      message: "Already Register please login",
+    })
+  );
+});
+
+test("registered success", async () => {
+  req = {
+    body: {
+      name: "John Doe",
+      email: "johndoe@example.com",
+      password: "password123",
+      phone: "123456789",
+      address: "123 Street",
+      answer: "Football",
+    },
+  };
+  // specify mock functionality
+  userModel.findOne = jest.fn().mockResolvedValue(null);
+  userModel.prototype.save = jest.fn();
+
+
+  await registerController(req, res);
+  expect(userModel.prototype.save).toHaveBeenCalled();
+  expect(res.status).toHaveBeenCalledWith(201);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      success: true,
+      message: "User Register Successfully",
+    })
+  );
+});
 });
 
 
@@ -164,7 +242,7 @@ describe("Login Controller Test", () => {
 
  test("email is missing", async () => {
    // all the Mocked function calls to dependencies
-   req = { email: "", password: "password123",};
+   req = { body: {email: "", password: "password123",},};
  
    await loginController(req, res);
 
@@ -183,7 +261,7 @@ describe("Login Controller Test", () => {
 
  test("email is invalid", async () => {
    // all the Mocked function calls to dependencies
-   req = { email: "dbcjwhbdncj", password: "password123",};
+   req = { body: {email: "dbcjwhbdncj", password: "password123",},};
  
    await loginController(req, res);
 
@@ -200,7 +278,7 @@ describe("Login Controller Test", () => {
 
  test("password is missing", async () => {
    // all the Mocked function calls to dependencies
-   req = { email: "johndoe@example.com", password: "",};
+   req = { body:{email: "johndoe@example.com", password: "",}, };
  
    await loginController(req, res);
 

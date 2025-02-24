@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.36% </span>
+                <span class="strong">52.74% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>34/91</span>
+                <span class='fraction'>48/91</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.36% </span>
+                <span class="strong">54.54% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>16/44</span>
+                <span class='fraction'>24/44</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">37.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/8</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.36% </span>
+                <span class="strong">52.74% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/91</span>
+                <span class='fraction'>48/91</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -436,29 +436,29 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -688,30 +688,30 @@ export const loginController = async (req, res) =&gt; {
 &nbsp;
 //forgotPasswordController
 &nbsp;
-export const forgotPasswordController = <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-<span class="cstat-no" title="statement not covered" >  try {</span>
-    const { email, answer, newPassword } = <span class="cstat-no" title="statement not covered" >req.body;</span>
-<span class="cstat-no" title="statement not covered" >    if (!email) {</span>
-<span class="cstat-no" title="statement not covered" >      res.status(400).send({ message: "Emai is required" });</span>
+export const forgotPasswordController = async (req, res) =&gt; {
+  try {
+    const { email, answer, newPassword } = req.body;
+    if (!email) {
+      res.status(400).send({ message: "Email is required" });
     }
-<span class="cstat-no" title="statement not covered" >    if (!answer) {</span>
-<span class="cstat-no" title="statement not covered" >      res.status(400).send({ message: "answer is required" });</span>
+    if (!answer) {
+      res.status(400).send({ message: "answer is required" });
     }
-<span class="cstat-no" title="statement not covered" >    if (!newPassword) {</span>
-<span class="cstat-no" title="statement not covered" >      res.status(400).send({ message: "New Password is required" });</span>
+    if (!newPassword) {
+      res.status(400).send({ message: "New Password is required" });
     }
     //check
-    const user = <span class="cstat-no" title="statement not covered" >await userModel.findOne({ email, answer });</span>
+    const user = await userModel.findOne({ email, answer });
     //validation
-<span class="cstat-no" title="statement not covered" >    if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >      return res.status(404).send({</span>
+    if (!user) {
+      return res.status(404).send({
         success: false,
         message: "Wrong Email Or Answer",
       });
     }
-    const hashed = <span class="cstat-no" title="statement not covered" >await hashPassword(newPassword);</span>
-<span class="cstat-no" title="statement not covered" >    await userModel.findByIdAndUpdate(user._id, { password: hashed });</span>
-<span class="cstat-no" title="statement not covered" >    res.status(200).send({</span>
+    const hashed = await hashPassword(newPassword);
+    await userModel.findByIdAndUpdate(user._id, { password: hashed });
+    res.status(200).send({
       success: true,
       message: "Password Reset Successfully",
     });
@@ -829,7 +829,7 @@ export const orderStatusController = <span class="fstat-no" title="function not 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-02-24T07:45:13.224Z
+                at 2025-02-24T10:53:49.174Z
             </div>
         <script src="prettify.js"></script>
         <script>

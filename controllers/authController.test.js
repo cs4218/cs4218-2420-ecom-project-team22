@@ -1,5 +1,5 @@
 import { jest } from "@jest/globals";
-import { registerController, loginController } from "./authController";
+import { registerController, loginController, forgotPasswordController } from "./authController";
 import userModel from "../models/userModel";
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
@@ -292,14 +292,243 @@ describe("Login Controller Test", () => {
    );
  });
 
+});
+
+describe("forgotPassword Controller Test", () => {
+  let req, res;
+ 
+  const mockUser = {
+   _id: "65b8d8f4c3a1b98765432101",
+   name: "John Doe",
+   email: "johndoe@example.com",
+   password: "hashedpassword",
+   phone: "123456789",
+   address: { city: "NYC", country: "USA" },
+   answer: "Football",
+   role: 0,
+ };
+ 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    req = {
+      body: {
+        email: "invalid-email",
+        newPassword: "password123",
+        answer: "Football",
+      },
+    };
+ 
+ 
+    res = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn(),
+    };
+  });
+ 
+ 
+  test("invalid email", async () => {
+    // specify mock functionality
+    // specify mock functionality
+    userModel.findOne = jest.fn().mockResolvedValue(null);
+  
+  
+    await forgotPasswordController(req, res);
+  
+    expect(userModel.findOne).toHaveBeenCalledWith({ email: "invalid-email", answer:"Football" });
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: false,
+        message:  "Wrong Email Or Answer",
+      })
+    );
+  });
 
 
+  test("wrong email and wrong answer", async () => {
+    req = {
+      body: {
+        email: "test@email.com",
+        newPassword: "password123",
+        answer: "Basketball",
+      },
+    };
+   
+    userModel.findOne = jest.fn().mockResolvedValue(null);
+  
+  
+    await forgotPasswordController(req, res);
+  
+    expect(userModel.findOne).toHaveBeenCalledWith({ email: "test@email.com", answer:"Basketball" });
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: false,
+        message:  "Wrong Email Or Answer",
+      })
+    );
+  });
+
+  test("wrong email", async () => {
+    req = {
+      body: {
+        email: "john@example.com",
+        newPassword: "password123",
+        answer: "Football",
+      },
+    };
+   
+    userModel.findOne = jest.fn().mockResolvedValue(null);
+  
+  
+    await forgotPasswordController(req, res);
+  
+    expect(userModel.findOne).toHaveBeenCalledWith({ email: "john@example.com", answer:"Football" });
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: false,
+        message:  "Wrong Email Or Answer",
+      })
+    );
+  });
 
 
+  test("wrong answer", async () => {
+    req = {
+      body: {
+        email: "test@email.com",
+        newPassword: "password123",
+        answer: "Basketball",
+      },
+    };
+   
+    userModel.findOne = jest.fn().mockResolvedValue(null);
+  
+  
+    await forgotPasswordController(req, res);
+  
+    expect(userModel.findOne).toHaveBeenCalledWith({ email: "test@email.com", answer:"Basketball" });
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: false,
+        message:  "Wrong Email Or Answer",
+      })
+    );
+  });
+ 
+ 
+  test("empty email", async () => {
+   // specify mock functionality
+   req = {
+    body: {
+      email: "",
+      newPassword: "password123",
+      answer: "Football",
+    },
+  };
 
+  await forgotPasswordController(req, res);
 
+  expect(res.status).toHaveBeenCalledWith(400);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: "Email is required",
+    })
+  );
+ });
+ 
+ 
+ test("empty answer", async () => {
+  req = {
+    body: {
+      email: "johndoe@example.com",
+      newPassword: "password123",
+      answer: "",
+    },
+  };
 
+  await forgotPasswordController(req, res);
+
+  expect(res.status).toHaveBeenCalledWith(400);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: "answer is required",
+    })
+  );
 });
 
 
+test("empty password", async () => {
+  req = {
+    body: {
+      email: "johndoe@example.com",
+      newPassword: "",
+      answer: "Football",
+    },
+  };
 
+  await forgotPasswordController(req, res);
+
+  expect(res.status).toHaveBeenCalledWith(400);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: "New Password is required",
+    })
+  );
+});
+
+test("new password is the same as the old password", async () => {
+  req = {
+    body: {
+      email: "johndoe@example.com",
+      newPassword: "newpassword",
+      answer: "Football",
+    },
+  };
+  userModel.findOne = jest.fn().mockResolvedValue(mockUser);
+  hashPassword.mockResolvedValue("hashedpassword");
+  comparePassword.mockResolvedValue(true);
+  await forgotPasswordController(req, res);
+
+  expect(userModel.findOne).toHaveBeenCalledWith({ email: "johndoe@example.com", answer: "Football" });
+  expect(hashPassword).toHaveBeenCalledWith("newpassword");
+  expect(comparePassword).toHaveBeenCalledWith("hashedpassword", mockUser.password);
+  expect(userModel.findByIdAndUpdate).not.toHaveBeenCalled();
+  expect(res.status).toHaveBeenCalledWith(400);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: "New Password is required",
+    })
+  );
+});
+ 
+ test("reset success", async () => {
+  req = {
+    body: {
+      email: "johndoe@example.com",
+      newPassword: "newpassword",
+      answer: "Football",
+    },
+  };
+  userModel.findOne = jest.fn().mockResolvedValue(mockUser);
+  hashPassword.mockResolvedValue("newhashedpassword");
+  comparePassword.mockResolvedValue(false);
+  userModel.findByIdAndUpdate = jest.fn().mockResolvedValue(true);
+
+  await forgotPasswordController(req, res);
+  
+  expect(userModel.findOne).toHaveBeenCalledWith({ email: "johndoe@example.com", answer: "Football" });
+  expect(hashPassword).toHaveBeenCalledWith("newpassword");
+  expect(comparePassword).toHaveBeenCalledWith("newhashedpassword", mockUser.password);
+  expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(mockUser._id, {password: "newhashedpassword"});
+  expect(res.status).toHaveBeenCalledWith(200);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      success: true,
+      message: "Password Reset Successfully",
+    })
+  );
+ });
+ });

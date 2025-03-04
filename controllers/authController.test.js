@@ -19,6 +19,49 @@ jest.mock("jsonwebtoken", () => ({
 }));
 
 
+describe("Test Controller Test", () => {
+  let req, res;
+ 
+ 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    req = {};
+    res = {
+      send: jest.fn(), // Mock the send method
+    };
+
+  });
+ 
+ 
+  test("Return Protected Routes", async () => {
+    testController(req, res);
+    expect(res.send).toHaveBeenCalledWith("Protected Routes");
+  });
+
+  test("Error", async () => {
+    console.log = jest.fn();
+    
+    // Force an error inside the controller
+    const error = new Error("Test error");
+    testController = jest.fn(() => {
+      throw error;
+    });
+
+    try {
+      testController(req, res);
+    } catch (e) {
+      // Do nothing, we're testing the catch block
+    }
+
+    // Expect the error to be logged
+    expect(console.log).toHaveBeenCalledWith(error);
+
+    // Expect res.send to have been called with an error object
+    expect(res.send).toHaveBeenCalledWith({ error });
+  });
+});
+
+
 describe("Register Controller Test", () => {
  let req, res;
 

@@ -1,5 +1,5 @@
 import { jest } from "@jest/globals";
-import { registerController, loginController, forgotPasswordController } from "./authController";
+import { registerController, loginController, forgotPasswordController, testController } from "./authController";
 import userModel from "../models/userModel";
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
@@ -21,17 +21,22 @@ jest.mock("jsonwebtoken", () => ({
 
 describe("Test Controller Test", () => {
   let req, res;
- 
- 
+  
   beforeEach(() => {
     jest.clearAllMocks();
-    req = {};
+    req = { body: {
+      name: "John Doe",
+      email: "invalid-email",
+      password: "password123",
+      phone: "invalid-phone",
+      address: "123 Street",
+      answer: "Football",
+    },};
     res = {
       send: jest.fn(), // Mock the send method
     };
 
   });
- 
  
   test("Return Protected Routes", async () => {
     testController(req, res);

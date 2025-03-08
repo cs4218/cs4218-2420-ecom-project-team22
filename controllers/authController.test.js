@@ -46,16 +46,14 @@ describe("Test Controller Test", () => {
   test("Error", async () => {
     console.log = jest.fn();
     
-    // Force an error inside the controller
     const error = new Error("Test error");
-    testController = jest.fn(() => {
+    res.send.mockImplementation(() => {
       throw error;
     });
 
     try {
-      testController(req, res);
+      testController(req,res);
     } catch (e) {
-      // Do nothing, we're testing the catch block
     }
 
     // Expect the error to be logged

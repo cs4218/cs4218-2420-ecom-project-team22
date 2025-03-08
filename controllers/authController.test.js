@@ -33,7 +33,7 @@ describe("Test Controller Test", () => {
       answer: "Football",
     },};
     res = {
-      send: jest.fn(), // Mock the send method
+      send: jest.fn(), 
     };
 
   });
@@ -56,10 +56,7 @@ describe("Test Controller Test", () => {
     } catch (e) {
     }
 
-    // Expect the error to be logged
     expect(console.log).toHaveBeenCalledWith(error);
-
-    // Expect res.send to have been called with an error object
     expect(res.send).toHaveBeenCalledWith({ error });
   });
 });
@@ -213,7 +210,6 @@ describe("Login Controller Test", () => {
 
 
  test("succesfull login", async () => {
-   // all the Mocked function calls to dependencies
    userModel.findOne =  jest.fn().mockResolvedValue(mockUser);
    comparePassword.mockResolvedValue(true);
    JWT.sign.mockReturnValue("mocked-jwt-token");
@@ -245,7 +241,6 @@ describe("Login Controller Test", () => {
 
 
  test("email is not registered", async () => {
-   // all the Mocked function calls to dependencies
    userModel.findOne =  jest.fn().mockResolvedValue(null);
    await loginController(req, res);
 
@@ -264,7 +259,6 @@ describe("Login Controller Test", () => {
 
 
  test("wrong password", async () => {
-   // all the Mocked function calls to dependencies
    userModel.findOne =  jest.fn().mockResolvedValue(mockUser);
    comparePassword.mockResolvedValue(false);
    await loginController(req, res);
@@ -287,7 +281,6 @@ describe("Login Controller Test", () => {
 
 
  test("email is missing", async () => {
-   // all the Mocked function calls to dependencies
    req = { body: {email: "", password: "password123",},};
  
    await loginController(req, res);
@@ -306,7 +299,6 @@ describe("Login Controller Test", () => {
 
 
  test("email is invalid", async () => {
-   // all the Mocked function calls to dependencies
    req = { body: {email: "dbcjwhbdncj", password: "password123",},};
  
    await loginController(req, res);
@@ -323,7 +315,6 @@ describe("Login Controller Test", () => {
 
 
  test("password is missing", async () => {
-   // all the Mocked function calls to dependencies
    req = { body:{email: "johndoe@example.com", password: "",}, };
  
    await loginController(req, res);
@@ -373,8 +364,6 @@ describe("forgotPassword Controller Test", () => {
  
  
   test("invalid email", async () => {
-    // specify mock functionality
-    // specify mock functionality
     userModel.findOne = jest.fn().mockResolvedValue(null);
   
   
@@ -466,7 +455,6 @@ describe("forgotPassword Controller Test", () => {
  
  
   test("empty email", async () => {
-   // specify mock functionality
    req = {
     body: {
       email: "",

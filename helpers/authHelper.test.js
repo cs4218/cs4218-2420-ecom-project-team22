@@ -5,17 +5,12 @@ import { hashPassword , comparePassword} from "./authHelper";
 describe("hashPassword", () => {
     test("should return a hashed password", async () => {
         const password = "mySecurePassword123";
-  
-        // Mock bcrypt.hash to return a specific hash
         const hashedValue = "mockHashedPassword";
         jest.spyOn(bcrypt, "hash").mockResolvedValue(hashedValue);
     
         const result = await hashPassword(password);
     
-        // Expect bcrypt.hash to have been called with the password and a salt
         expect(bcrypt.hash).toHaveBeenCalledWith(password, expect.any(Number));
-    
-        // Expect the function to return the mocked hash value
         expect(result).toBe(hashedValue);
     });
   
@@ -39,35 +34,25 @@ describe("hashPassword", () => {
 describe("comparePassword", () => {
 test("password and hash are the same", async () => {
     const password = "mySecurePassword123";
-
-    // Mock bcrypt.hash to return a specific hash
     const hashedPassword = "correctmockHashedPassword";
 
     jest.spyOn(bcrypt, "compare").mockResolvedValue(true);
 
     const result = await comparePassword(password, hashedPassword);
 
-    // Expect bcrypt.compare to be called with the correct arguments
     expect(bcrypt.compare).toHaveBeenCalledWith(password, hashedPassword);
-
-    // Expect the result to be true
     expect(result).toBe(true);
 });
 
 test("password and hash are different", async () => {
     const password = "mySecurePassword123";
-
-    // Mock bcrypt.hash to return a specific hash
     const hashedPassword = "wrongmockHashedPassword";
 
     jest.spyOn(bcrypt, "compare").mockResolvedValue(false);
     
     const result = await comparePassword(password, hashedPassword);
 
-    // Expect bcrypt.compare to be called with the correct arguments
     expect(bcrypt.compare).toHaveBeenCalledWith(password, hashedPassword);
-
-    // Expect the result to be true
     expect(result).toBe(false);
 });
 

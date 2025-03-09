@@ -199,6 +199,21 @@ export const updateProfileController = async (req, res) => {
   }
 };
 
+//admin view profile
+export const adminGetUsersController = async (req, res) => {
+  try {
+    if (req.user.role !== 1) {
+      return res.status(403).json({ success: false, message: "Access denied. Admins only." });
+    }
+
+    const users = await userModel.find().select("-password"); // Exclude passwords
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error retrieving users", error });
+  }
+};
+
 //orders
 export const getOrdersController = async (req, res) => {
   try {

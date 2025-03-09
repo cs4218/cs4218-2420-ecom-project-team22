@@ -105,6 +105,13 @@ describe("Register Controller Test", () => {
 
    await registerController(req, res);
    expect(userModel.prototype.save).not.toHaveBeenCalled();
+   expect(res.status).toHaveBeenCalledWith(400);
+   expect(res.send).toHaveBeenCalledWith(
+     expect.objectContaining({
+       success: false,
+       message: "Invalid email address",
+     })
+   );
  });
 
 
@@ -112,10 +119,17 @@ describe("Register Controller Test", () => {
   // specify mock functionality
   userModel.findOne = jest.fn().mockResolvedValue(null);
   userModel.prototype.save = jest.fn();
-
+  req.body.email = "valid@email.com"
 
   await registerController(req, res);
   expect(userModel.prototype.save).not.toHaveBeenCalled();
+  expect(res.status).toHaveBeenCalledWith(400);
+  expect(res.send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      success: false,
+      message: "Invalid phone number",
+    })
+  );
 });
 
 
@@ -268,7 +282,7 @@ describe("Login Controller Test", () => {
    expect(comparePassword).toHaveBeenCalledWith("password123", mockUser.password);
 
 
-   expect(res.status).toHaveBeenCalledWith(200);
+   expect(res.status).toHaveBeenCalledWith(400);
    expect(res.send).toHaveBeenCalledWith(
      expect.objectContaining({
        success: false,
@@ -286,11 +300,11 @@ describe("Login Controller Test", () => {
    await loginController(req, res);
 
 
-   expect(res.status).toHaveBeenCalledWith(404);
+   expect(res.status).toHaveBeenCalledWith(400);
    expect(res.send).toHaveBeenCalledWith(
      expect.objectContaining({
        success: false,
-       message: "Invalid email or password",
+       message: "Invalid email address",
      })
    );
  });
@@ -303,12 +317,12 @@ describe("Login Controller Test", () => {
  
    await loginController(req, res);
 
-
-   expect(res.status).toHaveBeenCalledWith(404);
+   expect(userModel.findOne).not.toHaveBeenCalled();
+   expect(res.status).toHaveBeenCalledWith(400);
    expect(res.send).toHaveBeenCalledWith(
      expect.objectContaining({
        success: false,
-       message: "Invalid email or password",
+       message: "Invalid email address",
      })
    );
  });
@@ -320,11 +334,11 @@ describe("Login Controller Test", () => {
    await loginController(req, res);
 
 
-   expect(res.status).toHaveBeenCalledWith(404);
+   expect(res.status).toHaveBeenCalledWith(400);
    expect(res.send).toHaveBeenCalledWith(
      expect.objectContaining({
        success: false,
-       message: "Invalid email or password",
+       message: "Invalid password",
      })
    );
  });
@@ -522,17 +536,17 @@ test("new password is the same as the old password", async () => {
     },
   };
   userModel.findOne = jest.fn().mockResolvedValue(mockUser);
-  hashPassword.mockResolvedValue("hashedpassword");
-  comparePassword.mockResolvedValue(true);
+  hashPassword.mockResolvedValue(mockUser.password);
+  
   await forgotPasswordController(req, res);
 
   expect(userModel.findOne).toHaveBeenCalledWith({ email: "johndoe@example.com", answer: "Football" });
   expect(hashPassword).toHaveBeenCalledWith("newpassword");
-  expect(comparePassword).toHaveBeenCalledWith("hashedpassword", mockUser.password);
   expect(userModel.findByIdAndUpdate).not.toHaveBeenCalled();
   expect(res.status).toHaveBeenCalledWith(400);
   expect(res.send).toHaveBeenCalledWith(
     expect.objectContaining({
+      success: false,
       message: "New Password is required",
     })
   );
@@ -548,14 +562,13 @@ test("new password is the same as the old password", async () => {
   };
   userModel.findOne = jest.fn().mockResolvedValue(mockUser);
   hashPassword.mockResolvedValue("newhashedpassword");
-  comparePassword.mockResolvedValue(false);
+ 
   userModel.findByIdAndUpdate = jest.fn().mockResolvedValue(true);
 
   await forgotPasswordController(req, res);
   
   expect(userModel.findOne).toHaveBeenCalledWith({ email: "johndoe@example.com", answer: "Football" });
   expect(hashPassword).toHaveBeenCalledWith("newpassword");
-  expect(comparePassword).toHaveBeenCalledWith("newhashedpassword", mockUser.password);
   expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(mockUser._id, {password: "newhashedpassword"});
   expect(res.status).toHaveBeenCalledWith(200);
   expect(res.send).toHaveBeenCalledWith(

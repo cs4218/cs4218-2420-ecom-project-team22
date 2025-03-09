@@ -29,6 +29,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 
+import { useNavigate } from "react-router-dom";
 Object.defineProperty(window, "localStorage", {
   value: {
     setItem: jest.fn(),
@@ -151,8 +152,7 @@ describe("Login Component", () => {
     );
 
     // Find and click the "Forgot Password" button
-    const forgotPasswordButton = screen.getByText(/Forgot Password/i);
-    fireEvent.click(forgotPasswordButton);
+    fireEvent.click(getByText("Forgot Password"));
 
     // Check if navigate was called with the correct path
     expect(navigate).toHaveBeenCalledWith("/forgot-password");

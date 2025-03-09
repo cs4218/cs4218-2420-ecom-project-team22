@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1741558298892" clover="3.2.0">
-  <project timestamp="1741558298892" name="All files">
-    <metrics statements="121" coveredstatements="69" conditionals="38" coveredconditionals="16" methods="36" coveredmethods="20" elements="195" coveredelements="105" complexity="0" loc="121" ncloc="121" packages="3" files="6" classes="6"/>
+<coverage generated="1741562998213" clover="3.2.0">
+  <project timestamp="1741562998213" name="All files">
+    <metrics statements="126" coveredstatements="100" conditionals="44" coveredconditionals="29" methods="36" coveredmethods="29" elements="206" coveredelements="158" complexity="0" loc="126" ncloc="126" packages="3" files="6" classes="6"/>
     <package name="context">
       <metrics statements="24" coveredstatements="19" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="6"/>
       <file name="auth.js" path="/Users/bryangoh/cs4218-2420-ecom-project-team22-fork/client/src/context/auth.js">
@@ -39,57 +39,62 @@
       </file>
     </package>
     <package name="pages">
-      <metrics statements="48" coveredstatements="1" conditionals="22" coveredconditionals="0" methods="14" coveredmethods="0"/>
+      <metrics statements="53" coveredstatements="32" conditionals="28" coveredconditionals="13" methods="14" coveredmethods="9"/>
       <file name="CartPage.js" path="/Users/bryangoh/cs4218-2420-ecom-project-team22-fork/client/src/pages/CartPage.js">
-        <metrics statements="48" coveredstatements="1" conditionals="22" coveredconditionals="0" methods="14" coveredmethods="0"/>
+        <metrics statements="53" coveredstatements="32" conditionals="28" coveredconditionals="13" methods="14" coveredmethods="9"/>
         <line num="12" count="1" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="32" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
+        <line num="13" count="4" type="stmt"/>
+        <line num="14" count="4" type="stmt"/>
+        <line num="15" count="4" type="stmt"/>
+        <line num="16" count="4" type="stmt"/>
+        <line num="17" count="4" type="stmt"/>
+        <line num="18" count="4" type="stmt"/>
+        <line num="21" count="4" type="stmt"/>
+        <line num="22" count="4" type="stmt"/>
+        <line num="23" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="29" count="4" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
         <line num="37" count="0" type="stmt"/>
         <line num="38" count="0" type="stmt"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="41" count="0" type="stmt"/>
-        <line num="42" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="50" count="0" type="stmt"/>
+        <line num="42" count="4" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="46" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
         <line num="51" count="0" type="stmt"/>
-        <line num="52" count="0" type="stmt"/>
         <line num="54" count="0" type="stmt"/>
-        <line num="57" count="0" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="4" type="stmt"/>
+        <line num="60" count="4" type="stmt"/>
+        <line num="61" count="4" type="stmt"/>
         <line num="62" count="0" type="stmt"/>
-        <line num="63" count="0" type="stmt"/>
         <line num="64" count="0" type="stmt"/>
-        <line num="65" count="0" type="stmt"/>
-        <line num="66" count="0" type="stmt"/>
-        <line num="70" count="0" type="stmt"/>
-        <line num="71" count="0" type="stmt"/>
-        <line num="72" count="0" type="stmt"/>
+        <line num="67" count="4" type="stmt"/>
+        <line num="68" count="4" type="stmt"/>
+        <line num="72" count="4" type="stmt"/>
         <line num="73" count="0" type="stmt"/>
         <line num="74" count="0" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
         <line num="76" count="0" type="stmt"/>
-        <line num="77" count="0" type="stmt"/>
         <line num="80" count="0" type="stmt"/>
-        <line num="99" count="0" type="stmt"/>
-        <line num="115" count="0" type="stmt"/>
-        <line num="132" count="0" type="stmt"/>
-        <line num="140" count="0" type="stmt"/>
-        <line num="147" count="0" type="stmt"/>
-        <line num="169" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="90" count="4" type="stmt"/>
+        <line num="109" count="4" type="stmt"/>
+        <line num="125" count="1" type="stmt"/>
+        <line num="142" count="0" type="stmt"/>
+        <line num="150" count="0" type="stmt"/>
+        <line num="157" count="0" type="stmt"/>
+        <line num="179" count="0" type="stmt"/>
       </file>
     </package>
     <package name="pages.Auth">

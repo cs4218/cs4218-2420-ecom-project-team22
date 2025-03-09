@@ -24,6 +24,13 @@ jest.mock("../../context/search", () => ({
 
 jest.mock("../../hooks/useCategory", () => jest.fn(() => []));
 
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate, // Return the mocked function
+}));
+
+import { useNavigate } from "react-router-dom";
 Object.defineProperty(window, "localStorage", {
   value: {
     setItem: jest.fn(),
@@ -133,6 +140,23 @@ describe("Login Component", () => {
     });
   });
 
+  it("navigates to forgot password page when 'Forgot Password' button is clicked", () => {
+
+    const { getByPlaceholderText, getByText } = render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Find and click the "Forgot Password" button
+    fireEvent.click(getByText("Forgot Password"));
+
+    // Check if navigate was called with the correct path
+    expect(mockNavigate).toHaveBeenCalledWith("/forgot-password");
+  });
+
   it("should display error message on failed login", async () => {
     axios.post.mockRejectedValueOnce({ message: "Invalid credentials" });
 
@@ -154,5 +178,33 @@ describe("Login Component", () => {
 
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
     expect(toast.error).toHaveBeenCalledWith("Something went wrong");
+  });
+
+
+  it("should display message on unauthorized login", async () => {
+    axios.post.mockResolvedValueOnce({
+      data: {
+        success: false,
+        message: "Unauthorized Access"
+      },
+    });
+    const { getByPlaceholderText, getByText } = render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.change(getByPlaceholderText("Enter Your Email"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Password"), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(getByText("LOGIN"));
+
+    await waitFor(() => expect(axios.post).toHaveBeenCalled());
+    expect(toast.error).toHaveBeenCalledWith("Unauthorized Access");
   });
 });

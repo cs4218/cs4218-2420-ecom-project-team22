@@ -22,9 +22,7 @@ jest.mock("../../context/search", () => ({
   useSearch: jest.fn(() => [{ keyword: "" }, jest.fn()]), // Mock useSearch hook to return null state and a mock function
 }));
 
-jest.mock("../../hooks/useCategory", () => ({
-  useCategory: jest.fn(() => {}),
-}));
+jest.mock("../../hooks/useCategory", () => jest.fn(() => []));
 
 Object.defineProperty(window, "localStorage", {
   value: {
@@ -85,10 +83,18 @@ describe("Login Component", () => {
         </Routes>
       </MemoryRouter>
     );
-    fireEvent.change(getByPlaceholderText("Enter Your Email"), { target: { value: "test@example.com" } });
-    fireEvent.change(getByPlaceholderText("Enter Your Password"), { target: { value: "password123" } });
-    expect(getByPlaceholderText("Enter Your Email").value).toBe("test@example.com");
-    expect(getByPlaceholderText("Enter Your Password").value).toBe("password123");
+    fireEvent.change(getByPlaceholderText("Enter Your Email"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Password"), {
+      target: { value: "password123" },
+    });
+    expect(getByPlaceholderText("Enter Your Email").value).toBe(
+      "test@example.com"
+    );
+    expect(getByPlaceholderText("Enter Your Password").value).toBe(
+      "password123"
+    );
   });
 
   it("should login the user successfully", async () => {
@@ -108,8 +114,12 @@ describe("Login Component", () => {
       </MemoryRouter>
     );
 
-    fireEvent.change(getByPlaceholderText("Enter Your Email"), { target: { value: "test@example.com" } });
-    fireEvent.change(getByPlaceholderText("Enter Your Password"), { target: { value: "password123" } });
+    fireEvent.change(getByPlaceholderText("Enter Your Email"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Password"), {
+      target: { value: "password123" },
+    });
     fireEvent.click(getByText("LOGIN"));
 
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
@@ -134,8 +144,12 @@ describe("Login Component", () => {
       </MemoryRouter>
     );
 
-    fireEvent.change(getByPlaceholderText("Enter Your Email"), { target: { value: "test@example.com" } });
-    fireEvent.change(getByPlaceholderText("Enter Your Password"), { target: { value: "password123" } });
+    fireEvent.change(getByPlaceholderText("Enter Your Email"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(getByPlaceholderText("Enter Your Password"), {
+      target: { value: "password123" },
+    });
     fireEvent.click(getByText("LOGIN"));
 
     await waitFor(() => expect(axios.post).toHaveBeenCalled());

@@ -8,7 +8,7 @@ describe("getOrdersController", () => {
   let req, res;
 
   beforeEach(() => {
-    req = { user: { _id: "user123" } };
+    req = { user: { _id: "65b8d8f4c3a1b98765432101" } };
     res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),

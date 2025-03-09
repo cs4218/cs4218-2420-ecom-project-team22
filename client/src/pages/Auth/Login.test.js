@@ -24,9 +24,10 @@ jest.mock("../../context/search", () => ({
 
 jest.mock("../../hooks/useCategory", () => jest.fn(() => []));
 
+const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
-  useNavigate: jest.fn(),
+  useNavigate: () => mockNavigate, // Return the mocked function
 }));
 
 import { useNavigate } from "react-router-dom";
@@ -140,8 +141,6 @@ describe("Login Component", () => {
   });
 
   it("navigates to forgot password page when 'Forgot Password' button is clicked", () => {
-    const navigate = jest.fn(); // Mock navigate function
-    useNavigate.mockReturnValue(navigate); // Make useNavigate return the mock function
 
     const { getByPlaceholderText, getByText } = render(
       <MemoryRouter initialEntries={["/login"]}>
@@ -155,7 +154,7 @@ describe("Login Component", () => {
     fireEvent.click(getByText("Forgot Password"));
 
     // Check if navigate was called with the correct path
-    expect(navigate).toHaveBeenCalledWith("/forgot-password");
+    expect(mockNavigate).toHaveBeenCalledWith("/forgot-password");
   });
 
   it("should display error message on failed login", async () => {

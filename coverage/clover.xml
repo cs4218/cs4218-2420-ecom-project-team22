@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1741553731926" clover="3.2.0">
-  <project timestamp="1741553731926" name="All files">
-    <metrics statements="73" coveredstatements="60" conditionals="16" coveredconditionals="14" methods="22" coveredmethods="17" elements="111" coveredelements="91" complexity="0" loc="73" ncloc="73" packages="2" files="5" classes="5"/>
+<coverage generated="1741555394704" clover="3.2.0">
+  <project timestamp="1741555394704" name="All files">
+    <metrics statements="73" coveredstatements="68" conditionals="16" coveredconditionals="16" methods="22" coveredmethods="20" elements="111" coveredelements="104" complexity="0" loc="73" ncloc="73" packages="2" files="5" classes="5"/>
     <package name="context">
-      <metrics statements="24" coveredstatements="11" conditionals="4" coveredconditionals="2" methods="8" coveredmethods="3"/>
+      <metrics statements="24" coveredstatements="19" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="6"/>
       <file name="auth.js" path="/Users/bryangoh/cs4218-2420-ecom-project-team22-fork/client/src/context/auth.js">
         <metrics statements="11" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
         <line num="5" count="1" type="stmt"/>
@@ -19,15 +19,15 @@
         <line num="32" count="4" type="stmt"/>
       </file>
       <file name="cart.js" path="/Users/bryangoh/cs4218-2420-ecom-project-team22-fork/client/src/context/cart.js">
-        <metrics statements="8" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
-        <line num="3" count="0" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="5" count="0" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="9" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
+        <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="10" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="13" count="4" type="stmt"/>
+        <line num="17" count="4" type="stmt"/>
       </file>
       <file name="search.js" path="/Users/bryangoh/cs4218-2420-ecom-project-team22-fork/client/src/context/search.js">
         <metrics statements="5" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>

@@ -24,26 +24,6 @@ jest.mock("../../context/search", () => ({
 
 jest.mock("../../hooks/useCategory", () => jest.fn(() => []));
 
-// Object.defineProperty(window, "localStorage", {
-//   value: {
-//     setItem: jest.fn(),
-//     getItem: jest.fn(),
-//     removeItem: jest.fn(),
-//   },
-//   writable: true,
-// });
-
-// // prevent jest from crashing
-// window.matchMedia =
-//   window.matchMedia ||
-//   function () {
-//     return {
-//       matches: false,
-//       addListener: function () {},
-//       removeListener: function () {},
-//     };
-//   };
-
 describe("Register Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();

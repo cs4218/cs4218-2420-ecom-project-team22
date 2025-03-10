@@ -688,6 +688,117 @@ describe("Product Controller", () => {
                 error: expect.any(Error)
             });
         });
+
+        it("should search products by partial keywords", async () => {
+            // Setup request with partial keyword
+            mockReq.params = { keyword: "prod" };
+            
+            // Mock products found with partial match
+            const mockProducts = [
+                { _id: "product1", name: "Product One" },
+                { _id: "product2", name: "Production Item" }
+            ];
+            
+            // Mock the product model find method
+            productModel.find = jest.fn().mockReturnThis();
+            productModel.select = jest.fn().mockResolvedValue(mockProducts);
+            
+            await searchProductController(mockReq, mockRes);
+            
+            // Verify search query was constructed correctly
+            expect(productModel.find).toHaveBeenCalledWith({
+                $or: [
+                    { name: { $regex: "prod", $options: "i" } },
+                    { description: { $regex: "prod", $options: "i" } }
+                ]
+            });
+            
+            // Verify response
+            expect(mockRes.json).toHaveBeenCalledWith(mockProducts);
+        });
+        
+        it("should perform case-insensitive searching", async () => {
+            // Setup request with mixed-case keyword
+            mockReq.params = { keyword: "PhOnE" };
+            
+            // Mock products found with case-insensitive match
+            const mockProducts = [
+                { _id: "product1", name: "Smartphone" },
+                { _id: "product2", description: "A phone with advanced features" }
+            ];
+            
+            // Mock the product model find method
+            productModel.find = jest.fn().mockReturnThis();
+            productModel.select = jest.fn().mockResolvedValue(mockProducts);
+            
+            await searchProductController(mockReq, mockRes);
+            
+            // Verify search query was constructed correctly with case-insensitive option
+            expect(productModel.find).toHaveBeenCalledWith({
+                $or: [
+                    { name: { $regex: "PhOnE", $options: "i" } },
+                    { description: { $regex: "PhOnE", $options: "i" } }
+                ]
+            });
+            
+            // Verify response
+            expect(mockRes.json).toHaveBeenCalledWith(mockProducts);
+        });
+        
+        it("should handle searching with special characters", async () => {
+            // Setup request with special characters
+            mockReq.params = { keyword: "product-123+" };
+            
+            // Mock products found
+            const mockProducts = [
+                { _id: "product1", name: "Product-123+" }
+            ];
+            
+            // Mock the product model find method
+            productModel.find = jest.fn().mockReturnThis();
+            productModel.select = jest.fn().mockResolvedValue(mockProducts);
+            
+            await searchProductController(mockReq, mockRes);
+            
+            // Verify search query was constructed correctly
+            expect(productModel.find).toHaveBeenCalledWith({
+                $or: [
+                    { name: { $regex: "product-123+", $options: "i" } },
+                    { description: { $regex: "product-123+", $options: "i" } }
+                ]
+            });
+            
+            // Verify response
+            expect(mockRes.json).toHaveBeenCalledWith(mockProducts);
+        });
+        
+        it("should handle searching with empty keyword", async () => {
+            // Setup request with empty keyword
+            mockReq.params = { keyword: "" };
+            
+            // Mock all products returned for empty search
+            const mockProducts = [
+                { _id: "product1", name: "Product One" },
+                { _id: "product2", name: "Product Two" }
+            ];
+            
+            // Mock the product model find method
+            productModel.find = jest.fn().mockReturnThis();
+            productModel.select = jest.fn().mockResolvedValue(mockProducts);
+            
+            await searchProductController(mockReq, mockRes);
+            
+            // Verify search query was constructed correctly
+            expect(productModel.find).toHaveBeenCalledWith({
+                $or: [
+                    { name: { $regex: "", $options: "i" } },
+                    { description: { $regex: "", $options: "i" } }
+                ]
+            });
+            
+            // Verify response
+            expect(mockRes.json).toHaveBeenCalledWith(mockProducts);
+        });
     });
 
     describe("realtedProductController", () => {
@@ -1061,6 +1172,90 @@ describe("Product Controller", () => {
                 category: ["category1"],
                 price: { $gte: 0, $lte: 1000 }
             });
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.send).toHaveBeenCalledWith({
+                success: true,
+                products: mockProducts
+            });
+        });
+
+        it("should filter products with empty checked array but valid price range", async () => {
+            // Setup request with empty checked array but valid price range
+            mockReq.body.checked = [];
+            mockReq.body.radio = [50, 500];
+            
+            const mockProducts = [
+                { _id: "product1", name: "Product 1", price: 100 },
+                { _id: "product2", name: "Product 2", price: 300 }
+            ];
+            
+            productModel.find = jest.fn().mockResolvedValue(mockProducts);
+            
+            await productFiltersController(mockReq, mockRes);
+            
+            expect(productModel.find).toHaveBeenCalledWith({ price: { $gte: 50, $lte: 500 } });
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.send).toHaveBeenCalledWith({
+                success: true,
+                products: mockProducts
+            });
+        });
+        
+        it("should filter products with empty radio array but valid categories", async () => {
+            // Setup request with empty radio array but valid categories
+            mockReq.body.checked = ["category1"];
+            mockReq.body.radio = [];
+            
+            const mockProducts = [
+                { _id: "product1", name: "Product 1", category: "category1" }
+            ];
+            
+            productModel.find = jest.fn().mockResolvedValue(mockProducts);
+            
+            await productFiltersController(mockReq, mockRes);
+            
+            expect(productModel.find).toHaveBeenCalledWith({ category: ["category1"] });
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.send).toHaveBeenCalledWith({
+                success: true,
+                products: mockProducts
+            });
+        });
+        
+        it("should handle invalid price ranges correctly", async () => {
+            // Setup request with invalid price range (min > max)
+            mockReq.body.checked = [];
+            mockReq.body.radio = [1000, 500]; // Min > Max
+            
+            const mockProducts = [];
+            
+            productModel.find = jest.fn().mockResolvedValue(mockProducts);
+            
+            await productFiltersController(mockReq, mockRes);
+            
+            expect(productModel.find).toHaveBeenCalledWith({ price: { $gte: 1000, $lte: 500 } });
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.send).toHaveBeenCalledWith({
+                success: true,
+                products: mockProducts
+            });
+        });
+        
+        it("should handle negative price values in range", async () => {
+            // Setup request with negative price values
+            mockReq.body.checked = [];
+            mockReq.body.radio = [-100, 500];
+            
+            const mockProducts = [
+                { _id: "product1", name: "Product 1", price: 0 },
+                { _id: "product2", name: "Product 2", price: 300 }
+            ];
+            
+            productModel.find = jest.fn().mockResolvedValue(mockProducts);
+            
+            await productFiltersController(mockReq, mockRes);
+            
+            expect(productModel.find).toHaveBeenCalledWith({ price: { $gte: -100, $lte: 500 } });
             expect(mockRes.status).toHaveBeenCalledWith(200);
             expect(mockRes.send).toHaveBeenCalledWith({
                 success: true,

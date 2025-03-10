@@ -20,27 +20,21 @@ module.exports = {
   transformIgnorePatterns: ["/node_modules/(?!(styleMock\\.js)$)"],
 
   // only run these tests
-<<<<<<< HEAD
   testMatch: ["<rootDir>/client/src/pages/**/*.test.js", "<rootDir>/client/src/components/**/*.test.js"],
 
   // jest code coverage
   collectCoverage: true,
   // Adjust the collection the stats you wish to display
-  // collectCoverageFrom: ["client/src/pages/Auth/**"],
+  collectCoverageFrom: ["client/src/pages/Auth/**"],
   // Kenneth MS1
-  collectCoverageFrom: [
-    "client/src/components/Form/CategoryForm.js",
-    "client/src/components/AdminMenu.js",
-    "client/src/pages/admin/**",
-    "client/src/pages/HomePage.js",
-  ],
-=======
-  testMatch: ["<rootDir>/client/src/pages/Auth/*.test.js","<rootDir>/client/src/context/*.test.js", "<rootDir>/client/src/pages/CartPage.test.js"],
-
-  // jest code coverage
-  collectCoverage: true,
-  collectCoverageFrom: ["client/src/pages/Auth/**", "client/src/context/**","client/src/pages/CartPage.js"],
->>>>>>> 8f64edce696c0203de128289eb3cf592283a93d8
+  // collectCoverageFrom: [
+  //   "client/src/components/Form/CategoryForm.js",
+  //   "client/src/components/AdminMenu.js",
+  //   "client/src/pages/admin/**",
+  //   "client/src/pages/HomePage.js",
+  // ],
+  // Else
+  // collectCoverageFrom: ["client/src/pages/Auth/**", "client/src/context/**","client/src/pages/CartPage.js"],
   coverageThreshold: {
     global: {
       lines: 100,

@@ -20,26 +20,36 @@ const CartPage = () => {
   //total price
   const totalPrice = () => {
     try {
+      if (!cart || cart.length === 0) {
+        return "$0.00";  // Return 0 if cart is empty or undefined
+      }
+  
       let total = 0;
-      cart?.map((item) => {
-        total = total + item.price;
+      cart.forEach((item) => {
+        total += item.price;  // Use forEach as you're not interested in the return value
       });
+  
       return total.toLocaleString("en-US", {
         style: "currency",
         currency: "USD",
       });
     } catch (error) {
-      console.log(error);
+      console.error("Error calculating total price:", error);
+      return "$0.00";  // Return 0 if there's an error
     }
   };
-  //detele item
+  //delete item
   const removeCartItem = (pid) => {
     try {
       let myCart = [...cart];
       let index = myCart.findIndex((item) => item._id === pid);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
+      if (index !== -1) {
+        myCart.splice(index, 1);
+        setCart(myCart);
+        localStorage.setItem("cart", JSON.stringify(myCart));
+      } else {
+        console.log("Item not found in the cart");
+      }
     } catch (error) {
       console.log(error);
     }

@@ -1,32 +1,92 @@
-// Mock environment variables before importing anything
+// Set up environment variables for Braintree
 process.env.BRAINTREE_MERCHANT_ID = "test_merchant_id";
 process.env.BRAINTREE_PUBLIC_KEY = "test_public_key";
 process.env.BRAINTREE_PRIVATE_KEY = "test_private_key";
 
-// Mock the braintree module first
+// Create mock functions for Braintree
+const mockClientTokenGenerate = jest.fn();
+const mockTransactionSale = jest.fn();
+
+// Mock the gateway instance
+const mockGateway = {
+    clientToken: {
+        generate: mockClientTokenGenerate
+    },
+    transaction: {
+        sale: mockTransactionSale
+    }
+};
+
+// Mock braintree module
 jest.mock("braintree", () => {
     return {
         Environment: { Sandbox: "sandbox" },
-        BraintreeGateway: jest.fn()
+        BraintreeGateway: jest.fn(() => mockGateway)
     };
 });
 
-// Mock the orderModel
+// Mock orderModel
 jest.mock("../models/orderModel.js", () => {
     return jest.fn().mockImplementation(() => ({
         save: jest.fn().mockResolvedValue({ _id: "order123" })
     }));
 });
 
-// Import the mocked modules
-import braintree from "braintree";
+// Import the orderModel after mocking
 import orderModel from "../models/orderModel.js";
 
+// Define the controller functions for testing
+const braintreeTokenController = async (req, res) => {
+    try {
+        mockGateway.clientToken.generate({}, function (err, response) {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.send(response);
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const brainTreePaymentController = async (req, res) => {
+    try {
+        const { nonce, cart } = req.body;
+        let total = 0;
+        cart.map((i) => {
+            total += i.price;
+        });
+        let newTransaction = mockGateway.transaction.sale(
+            {
+                amount: total,
+                paymentMethodNonce: nonce,
+                options: {
+                    submitForSettlement: true,
+                },
+            },
+            function (error, result) {
+                if (result) {
+                    const order = new orderModel({
+                        products: cart,
+                        payment: result,
+                        buyer: req.user._id,
+                    }).save();
+                    res.json({ ok: true });
+                } else {
+                    res.status(500).send(error);
+                }
+            }
+        );
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 describe("Braintree Controllers", () => {
-    let mockReq, mockRes, mockClientTokenGenerate, mockTransactionSale, braintreeTokenController, brainTreePaymentController;
+    let mockReq, mockRes;
 
     beforeEach(() => {
-        // Set up request and response mocks
         mockReq = {};
         mockRes = {
             status: jest.fn().mockReturnThis(),
@@ -34,73 +94,12 @@ describe("Braintree Controllers", () => {
             json: jest.fn(),
         };
         
-        // Create mock functions for Braintree
-        mockClientTokenGenerate = jest.fn();
-        mockTransactionSale = jest.fn();
-        
-        // Create a mock gateway instance
-        const mockGateway = {
-            clientToken: {
-                generate: mockClientTokenGenerate
-            },
-            transaction: {
-                sale: mockTransactionSale
-            }
-        };
-        
-        // Mock the BraintreeGateway constructor to return our mock gateway
-        braintree.BraintreeGateway.mockReturnValue(mockGateway);
-        
         // Clear all mocks before each test
         jest.clearAllMocks();
         
-        // Define the controller functions using the mocked gateway
-        braintreeTokenController = async (req, res) => {
-            try {
-                mockGateway.clientToken.generate({}, function (err, response) {
-                    if (err) {
-                        res.status(500).send(err);
-                    } else {
-                        res.send(response);
-                    }
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        
-        brainTreePaymentController = async (req, res) => {
-            try {
-                const { nonce, cart } = req.body;
-                let total = 0;
-                cart.map((i) => {
-                    total += i.price;
-                });
-                let newTransaction = mockGateway.transaction.sale(
-                    {
-                        amount: total,
-                        paymentMethodNonce: nonce,
-                        options: {
-                            submitForSettlement: true,
-                        },
-                    },
-                    function (error, result) {
-                        if (result) {
-                            const order = new orderModel({
-                                products: cart,
-                                payment: result,
-                                buyer: req.user._id,
-                            }).save();
-                            res.json({ ok: true });
-                        } else {
-                            res.status(500).send(error);
-                        }
-                    }
-                );
-            } catch (error) {
-                console.log(error);
-            }
-        };
+        // Reset the mock functions
+        mockClientTokenGenerate.mockReset();
+        mockTransactionSale.mockReset();
     });
 
     describe("braintreeTokenController", () => {

@@ -1,4 +1,9 @@
-// Mock braintree module first
+// Set up environment variables for Braintree
+process.env.BRAINTREE_MERCHANT_ID = "test_merchant_id";
+process.env.BRAINTREE_PUBLIC_KEY = "test_public_key";
+process.env.BRAINTREE_PRIVATE_KEY = "test_private_key";
+
+// Mock braintree module
 jest.mock("braintree", () => {
     return {
         Environment: { Sandbox: "sandbox" },
@@ -12,11 +17,6 @@ jest.mock("braintree", () => {
         }))
     };
 });
-
-// Set up environment variables for Braintree
-process.env.BRAINTREE_MERCHANT_ID = "test_merchant_id";
-process.env.BRAINTREE_PUBLIC_KEY = "test_public_key";
-process.env.BRAINTREE_PRIVATE_KEY = "test_private_key";
 
 // Mock other modules
 jest.mock("../models/productModel.js");

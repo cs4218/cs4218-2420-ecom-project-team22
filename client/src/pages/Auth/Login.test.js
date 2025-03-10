@@ -96,12 +96,8 @@ describe("Login Component", () => {
     fireEvent.change(getByPlaceholderText("Enter Your Password"), {
       target: { value: "password123" },
     });
-    expect(getByPlaceholderText("Enter Your Email").value).toBe(
-      "test@example.com"
-    );
-    expect(getByPlaceholderText("Enter Your Password").value).toBe(
-      "password123"
-    );
+    expect(getByPlaceholderText("Enter Your Email").value).toBe("test@example.com");
+    expect(getByPlaceholderText("Enter Your Password").value).toBe("password123");
   });
 
   it("should login the user successfully", async () => {
@@ -141,7 +137,6 @@ describe("Login Component", () => {
   });
 
   it("navigates to forgot password page when 'Forgot Password' button is clicked", () => {
-
     const { getByPlaceholderText, getByText } = render(
       <MemoryRouter initialEntries={["/login"]}>
         <Routes>
@@ -180,12 +175,11 @@ describe("Login Component", () => {
     expect(toast.error).toHaveBeenCalledWith("Something went wrong");
   });
 
-
   it("should display message on unauthorized login", async () => {
     axios.post.mockResolvedValueOnce({
       data: {
         success: false,
-        message: "Unauthorized Access"
+        message: "Unauthorized Access",
       },
     });
     const { getByPlaceholderText, getByText } = render(

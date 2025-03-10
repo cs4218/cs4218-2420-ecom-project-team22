@@ -22,8 +22,10 @@ const CreateProduct = () => {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get("/api/v1/category/get-category");
-      if (data?.success) {
-        setCategories(data?.category);
+      if (data.success) {
+        setCategories(data.category);
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
       console.log(error);
@@ -46,12 +48,12 @@ const CreateProduct = () => {
       productData.append("quantity", quantity);
       productData.append("photo", photo);
       productData.append("category", category);
-      const { data } = axios.post("/api/v1/product/create-product", productData);
-      if (data?.success) {
-        toast.error(data?.message);
-      } else {
+      const { data } = await axios.post("/api/v1/product/create-product", productData);
+      if (data.success) {
         toast.success("Product Created Successfully");
         navigate("/dashboard/admin/products");
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
       console.log(error);
@@ -70,7 +72,7 @@ const CreateProduct = () => {
             <h1>Create Product</h1>
             <div className="m-1 w-75">
               <Select
-                bordered={false}
+                variant={"borderless"}
                 placeholder="Select a category"
                 size="large"
                 showSearch
@@ -78,9 +80,10 @@ const CreateProduct = () => {
                 onChange={(value) => {
                   setCategory(value);
                 }}
+                data-testid="category-select"
               >
                 {categories?.map((c) => (
-                  <Option key={c._id} value={c._id}>
+                  <Option key={c._id} value={c._id} data-testid="category-option">
                     {c.name}
                   </Option>
                 ))}
@@ -113,7 +116,7 @@ const CreateProduct = () => {
                 <input
                   type="text"
                   value={name}
-                  placeholder="write a name"
+                  placeholder="Product Name"
                   className="form-control"
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -122,7 +125,7 @@ const CreateProduct = () => {
                 <textarea
                   type="text"
                   value={description}
-                  placeholder="write a description"
+                  placeholder="Product Description"
                   className="form-control"
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -132,7 +135,7 @@ const CreateProduct = () => {
                 <input
                   type="number"
                   value={price}
-                  placeholder="write a Price"
+                  placeholder="Price"
                   className="form-control"
                   onChange={(e) => setPrice(e.target.value)}
                 />
@@ -141,15 +144,15 @@ const CreateProduct = () => {
                 <input
                   type="number"
                   value={quantity}
-                  placeholder="write a quantity"
+                  placeholder="Quantity"
                   className="form-control"
                   onChange={(e) => setQuantity(e.target.value)}
                 />
               </div>
               <div className="mb-3">
                 <Select
-                  bordered={false}
-                  placeholder="Select Shipping "
+                  variant={"borderless"}
+                  placeholder="Shipping"
                   size="large"
                   showSearch
                   className="form-select mb-3"
@@ -162,7 +165,7 @@ const CreateProduct = () => {
                 </Select>
               </div>
               <div className="mb-3">
-                <button className="btn btn-primary" onClick={handleCreate}>
+                <button data-testid="create-product" className="btn btn-primary" onClick={handleCreate}>
                   CREATE PRODUCT
                 </button>
               </div>

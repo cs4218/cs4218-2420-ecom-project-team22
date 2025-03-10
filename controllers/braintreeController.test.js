@@ -3,25 +3,29 @@ process.env.BRAINTREE_MERCHANT_ID = "test_merchant_id";
 process.env.BRAINTREE_PUBLIC_KEY = "test_public_key";
 process.env.BRAINTREE_PRIVATE_KEY = "test_private_key";
 
-// Create mock functions for Braintree
-const mockClientTokenGenerate = jest.fn();
-const mockTransactionSale = jest.fn();
-
-// Mock the gateway instance
-const mockGateway = {
-    clientToken: {
-        generate: mockClientTokenGenerate
-    },
-    transaction: {
-        sale: mockTransactionSale
-    }
-};
-
 // Mock braintree module
 jest.mock("braintree", () => {
+    // Create mock functions for Braintree
+    const mockClientTokenGenerate = jest.fn();
+    const mockTransactionSale = jest.fn();
+    
+    // Create a mock gateway
+    const mockGateway = {
+        clientToken: {
+            generate: mockClientTokenGenerate
+        },
+        transaction: {
+            sale: mockTransactionSale
+        }
+    };
+    
+    // Export the mock functions so tests can access them
+    global.mockClientTokenGenerate = mockClientTokenGenerate;
+    global.mockTransactionSale = mockTransactionSale;
+    
     return {
         Environment: { Sandbox: "sandbox" },
-        BraintreeGateway: jest.fn(() => mockGateway)
+        BraintreeGateway: jest.fn().mockReturnValue(mockGateway)
     };
 });
 
@@ -32,56 +36,11 @@ jest.mock("../models/orderModel.js", () => {
     }));
 });
 
+// Import the actual controller functions after setting up all mocks
+import { braintreeTokenController, brainTreePaymentController } from "../controllers/productController.js";
+
 // Import the orderModel after mocking
 import orderModel from "../models/orderModel.js";
-
-// Define the controller functions for testing
-const braintreeTokenController = async (req, res) => {
-    try {
-        mockGateway.clientToken.generate({}, function (err, response) {
-            if (err) {
-                res.status(500).send(err);
-            } else {
-                res.send(response);
-            }
-        });
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-const brainTreePaymentController = async (req, res) => {
-    try {
-        const { nonce, cart } = req.body;
-        let total = 0;
-        cart.map((i) => {
-            total += i.price;
-        });
-        let newTransaction = mockGateway.transaction.sale(
-            {
-                amount: total,
-                paymentMethodNonce: nonce,
-                options: {
-                    submitForSettlement: true,
-                },
-            },
-            function (error, result) {
-                if (result) {
-                    const order = new orderModel({
-                        products: cart,
-                        payment: result,
-                        buyer: req.user._id,
-                    }).save();
-                    res.json({ ok: true });
-                } else {
-                    res.status(500).send(error);
-                }
-            }
-        );
-    } catch (error) {
-        console.log(error);
-    }
-};
 
 describe("Braintree Controllers", () => {
     let mockReq, mockRes;
@@ -98,15 +57,15 @@ describe("Braintree Controllers", () => {
         jest.clearAllMocks();
         
         // Reset the mock functions
-        mockClientTokenGenerate.mockReset();
-        mockTransactionSale.mockReset();
+        global.mockClientTokenGenerate.mockReset();
+        global.mockTransactionSale.mockReset();
     });
 
     describe("braintreeTokenController", () => {
         it("should generate and return a client token", async () => {
             // Mock the Braintree gateway clientToken.generate method
             const mockResponse = { clientToken: "mock-client-token" };
-            mockClientTokenGenerate.mockImplementation((options, callback) => {
+            global.mockClientTokenGenerate.mockImplementation((options, callback) => {
                 callback(null, mockResponse);
             });
             
@@ -123,7 +82,7 @@ describe("Braintree Controllers", () => {
             
             // Mock the Braintree gateway clientToken.generate method to return an error
             const mockError = new Error("Failed to generate token");
-            mockClientTokenGenerate.mockImplementation((options, callback) => {
+            global.mockClientTokenGenerate.mockImplementation((options, callback) => {
                 callback(mockError, null);
             });
             
@@ -140,7 +99,7 @@ describe("Braintree Controllers", () => {
             console.log = jest.fn();
             
             // Mock the Braintree gateway to throw an exception
-            mockClientTokenGenerate.mockImplementation(() => {
+            global.mockClientTokenGenerate.mockImplementation(() => {
                 throw new Error("Connection error");
             });
             
@@ -168,7 +127,7 @@ describe("Braintree Controllers", () => {
             
             // Mock the Braintree gateway transaction.sale method
             const mockResult = { transaction: { id: "transaction123" } };
-            mockTransactionSale.mockImplementation((options, callback) => {
+            global.mockTransactionSale.mockImplementation((options, callback) => {
                 callback(null, mockResult);
             });
             
@@ -176,7 +135,7 @@ describe("Braintree Controllers", () => {
             await brainTreePaymentController(mockReq, mockRes);
             
             // Verify the transaction was created with correct parameters
-            expect(mockTransactionSale).toHaveBeenCalledWith(
+            expect(global.mockTransactionSale).toHaveBeenCalledWith(
                 expect.objectContaining({
                     amount: 300, // 100 + 200
                     paymentMethodNonce: "mock-payment-nonce",
@@ -207,7 +166,7 @@ describe("Braintree Controllers", () => {
             
             // Mock the Braintree gateway transaction.sale method to return an error
             const mockError = new Error("Payment failed");
-            mockTransactionSale.mockImplementation((options, callback) => {
+            global.mockTransactionSale.mockImplementation((options, callback) => {
                 callback(mockError, null);
             });
             
@@ -224,7 +183,7 @@ describe("Braintree Controllers", () => {
             console.log = jest.fn();
             
             // Mock the Braintree gateway to throw an exception
-            mockTransactionSale.mockImplementation(() => {
+            global.mockTransactionSale.mockImplementation(() => {
                 throw new Error("Connection error");
             });
             

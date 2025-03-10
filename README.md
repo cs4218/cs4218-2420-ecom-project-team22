@@ -1,4 +1,4 @@
-# CS4128 Team 22
+# CS4218 Team 22
 
 [Link to CI](https://github.com/cs4218/cs4218-2420-ecom-project-team22/actions/runs/13236612952/job/36942674787)
 

@@ -6,11 +6,11 @@ module.exports= {
   testEnvironment: "node",
 
   // which test to run
-  testMatch: ["<rootDir>/controllers/*.test.js", "<rootDir>/helpers/*.test.js","<rootDir>/middlewares/*.test.js"],
+  testMatch: ["<rootDir>/config/*.test.js", "<rootDir>/controllers/*.test.js", "<rootDir>/helpers/*.test.js","<rootDir>/middlewares/*.test.js", "<rootDir>/models/*.test.js"],
 
   // jest code coverage
   collectCoverage: true,
-  collectCoverageFrom: ["controllers/**", "helpers/**", "middlewares/**"],
+  collectCoverageFrom: ["config/**", "controllers/**", "helpers/**", "middlewares/**", "models/**"],
   coverageThreshold: {
     global: {
       lines: 100,

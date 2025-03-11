@@ -1,4 +1,5 @@
 import React from "react";
+import { jest, expect, test, describe } from "@jest/globals";
 import { render, waitFor, screen, fireEvent } from "@testing-library/react";
 import axios from "axios";
 import { MemoryRouter, Routes, Route, useParams, useNavigate } from "react-router-dom";
@@ -84,17 +85,31 @@ describe("ProductDetails Component", () => {
     // Wait for the product details to be fetched and rendered
     await waitFor(() => {
       expect(screen.getByText("Product Details")).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText("Test Product")).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText("This is a test product")).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText("$100.00")).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText("Test Category")).toBeInTheDocument();
     });
 
     // Wait for the related products to be fetched and rendered
     await waitFor(() => {
       expect(screen.getByText("Similar Products ➡️")).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText("Related Product")).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText("This is a related product...")).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(screen.getByText("$50.00")).toBeInTheDocument();
     });
   });

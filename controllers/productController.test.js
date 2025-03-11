@@ -1,11 +1,12 @@
-import { createProductController, getProductController, getSingleProductController, productPhotoController, deleteProductController, updateProductController, productFiltersController } from "../controllers/productController.js";
+import { jest, expect, test, describe } from "@jest/globals";
+jest.mock("../models/productModel.js");
 import productModel from "../models/productModel.js";
+import { createProductController, getProductController, getSingleProductController, productPhotoController, deleteProductController, updateProductController, productFiltersController } from "../controllers/productController.js";
 import fs from "fs";
 import slugify from "slugify";
 import braintree from "braintree";
 import dotenv from "dotenv";
 
-jest.mock("../models/productModel.js");
 jest.mock("fs");
 jest.mock("slugify", () => jest.fn((name) => name.toLowerCase().replace(/\s+/g, "-")));
 jest.mock("braintree", () => ({
@@ -320,8 +321,8 @@ describe("Product Controller", () => {
             productModel.findById = jest.fn().mockResolvedValue(mockProduct);
 
             // Mock response functions
-            res.set = jest.fn();  
-            res.status = jest.fn().mockReturnValue(res);
+            res.set = jest.fn();
+            res.status = jest.fn().mockReturnThis();
             res.send = jest.fn();
 
             await productPhotoController(req, res);
@@ -355,7 +356,7 @@ describe("Product Controller", () => {
             req.params = { pid: "product123" };
         
             // Create a mock product document, mocking a Mongoose document
-            productModel.findByIdAndDelete = jest.fn().mockResolvedValue({ _id: "product123" });
+            productModel.findByIdAndDelete.mockResolvedValue({ _id: "product123" });
         
             // Call the deleteProductController
             await deleteProductController(req, res);

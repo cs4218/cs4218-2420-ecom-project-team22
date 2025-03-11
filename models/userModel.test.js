@@ -1,21 +1,6 @@
+import { jest, expect, test, describe } from "@jest/globals";
 import mongoose from 'mongoose';
-import UserModel from './userModel'; // Ensure the path is correct
-
-jest.mock('mongoose', () => ({
-  Schema: jest.fn().mockImplementation(() => ({
-    path: jest.fn().mockReturnValue({
-      required: true,
-    }),
-    set: jest.fn(),
-  })),
-  model: jest.fn().mockImplementation((modelName, schema) => {
-    return {
-      ...schema,
-      save: jest.fn().mockResolvedValue(true),
-      findOne: jest.fn().mockResolvedValue(null),
-    };
-  }),
-}));
+import UserModel from './userModel.js'; // Ensure the path is correct
 
 describe('User Model', () => {
   it('should have required fields', () => {
@@ -65,7 +50,8 @@ describe('User Model', () => {
     const existingUser = { email: 'existing@example.com' };
 
     // Simulate that findOne() would find a user with the same email
-    mongoose.model('User').findOne.mockResolvedValue(existingUser);
+    UserModel.findOne = jest.fn().mockResolvedValue(existingUser);
+    UserModel.prototype.save = jest.fn().mockResolvedValue(existingUser);
 
     const user = new UserModel({
       name: 'Jane Doe',
@@ -79,7 +65,7 @@ describe('User Model', () => {
     const savedUser = await user.save();
 
     // Assuming there's a custom validation for unique email
-    expect(savedUser.email).toBe(existingUser.email); // This is just a placeholder; you can test the uniqueness logic more explicitly
+    expect(savedUser.email).toBe(existingUser.email); 
   });
 
   it('should have timestamps', () => {
@@ -103,6 +89,6 @@ describe('User Model', () => {
 
     expect(savedUser.createdAt).toBeDefined();
     expect(savedUser.updatedAt).toBeDefined();
-    expect(savedUser.createdAt).toBe(savedUser.updatedAt); // They should be equal if saved at the same time
+    expect(savedUser.createdAt).toStrictEqual(savedUser.updatedAt); // They should be equal if saved at the same time
   });
 });

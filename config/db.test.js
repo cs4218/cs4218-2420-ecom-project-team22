@@ -1,11 +1,7 @@
+import { jest, expect, test, describe } from "@jest/globals";
 import mongoose from "mongoose";
-import connectDB from "./db"; 
-
-jest.mock("mongoose");
-jest.mock("colors", () => ({
-    bgMagenta: jest.fn().mockReturnValue({ white: jest.fn().mockReturnValue('colored text') }),
-    bgRed: jest.fn().mockReturnValue({ white: jest.fn().mockReturnValue('colored text') }),
-  }));  
+import colors from "colors";
+import connectDB from "./db";
 
 describe("connectDB", () => {
   let logSpy;
@@ -20,6 +16,7 @@ describe("connectDB", () => {
 
   it("should log success message when connection is successful", async () => {
     // Mock a successful connection
+    mongoose.connect = jest.fn();
     mongoose.connect.mockResolvedValue({
       connection: { host: "localhost" },
     });

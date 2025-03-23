@@ -2,7 +2,17 @@ import { adminGetUsersController } from "../controllers/authController";
 import userModel from "../models/userModel";
 import { jest } from "@jest/globals";
 
-jest.mock("../models/userModel");
+beforeEach(() => {
+    jest.clearAllMocks();
+
+    userModel.find = jest.fn().mockReturnValue({
+        select: jest.fn().mockResolvedValue([
+            { _id: "1", name: "Admin User" },
+            { _id: "0", name: "Regular User" },
+        ]),
+    });
+});
+
 
 describe("adminGetUsersController", () => {
     let req, res;
@@ -25,7 +35,9 @@ describe("adminGetUsersController", () => {
             { _id: "user2", name: "Bob Smith", email: "bob@example.com", role: 0 },
         ];
 
-        userModel.find.mockResolvedValue(mockUsers);
+        userModel.find.mockReturnValue({
+            select: jest.fn().mockResolvedValue(mockUsers),
+        });
 
         await adminGetUsersController(req, res);
 
@@ -49,8 +61,8 @@ describe("adminGetUsersController", () => {
     });
 
     it("should return 500 if database error occurs", async () => {
-        userModel.find.mockImplementation(() => {
-            throw new Error("Database error");
+        userModel.find.mockReturnValue({
+            select: jest.fn().mockRejectedValue(new Error("Database error")),
         });
 
         await adminGetUsersController(req, res);

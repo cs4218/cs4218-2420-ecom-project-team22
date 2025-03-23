@@ -29,7 +29,7 @@ describe("getOrdersController", () => {
 
     await getOrdersController(req, res);
 
-    expect(orderModel.find).toHaveBeenCalledWith({ buyer: "user123" });
+    expect(orderModel.find).toHaveBeenCalledWith({ buyer: "65b8d8f4c3a1b98765432101" });
     expect(res.json).toHaveBeenCalledWith(mockOrders);
   });
 

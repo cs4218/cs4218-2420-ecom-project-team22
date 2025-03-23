@@ -1,0 +1,71 @@
+import { test, expect } from '@playwright/test';
+
+test('test Navbar before logIn', async ({ page }) => {
+  await page.goto('http://localhost:3000/');
+  await page.getByRole('link', { name: '🛒 Virtual Vault' }).click();
+  await expect(page.getByText("All Products")).toBeVisible();
+  await page.getByRole('link', { name: 'Home' }).click();
+  await expect(page.getByText("All Products")).toBeVisible();
+  await page.getByRole('link', { name: 'Categories' }).click();
+  await page.locator('#navbarTogglerDemo01').getByRole('link', { name: 'Book' }).click();
+  await expect(page.getByText("Category - Book")).toBeVisible();
+  await page.getByRole('link', { name: 'Categories' }).click();
+  await page.getByRole('link', { name: 'Clothing' }).click();
+  await expect(page.getByText("Category - Clothing")).toBeVisible();
+  await page.getByRole('link', { name: 'Categories' }).click();
+  await page.getByRole('link', { name: 'Electronics' }).click();
+  await expect(page.getByText("Category - Electronics")).toBeVisible();
+  await page.getByRole('link', { name: 'Register' }).click();
+  await expect(page.getByText("REGISTER FORM")).toBeVisible();
+  await page.getByRole('link', { name: 'Login' }).click();
+  await expect(page.getByText("LOGIN FORM")).toBeVisible();
+  await page.getByRole('link', { name: 'Cart' }).click();
+  await expect(page.getByText("Cart Summary")).toBeVisible();
+});
+
+
+test('test Navbar after logIn', async ({ page }) => {
+    await page.goto('http://localhost:3000/');
+
+  await page.getByRole('link', { name: 'Register' }).click();
+  await page.getByRole('textbox', { name: 'Enter Your Name' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Enter Your Name' }).fill('Test');
+  await page.getByRole('textbox', { name: 'Enter Your Name' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Enter Your Name' }).fill('TestN');
+  await page.getByRole('textbox', { name: 'Enter Your Name' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Enter Your Name' }).fill('TestName');
+  await page.getByRole('textbox', { name: 'Enter Your Email' }).click();
+  await page.getByRole('textbox', { name: 'Enter Your Email' }).fill('testemail0@email.com');
+  await page.getByRole('textbox', { name: 'Enter Your Password' }).click();
+  await page.getByRole('textbox', { name: 'Enter Your Password' }).fill('123456789');
+  await page.getByRole('textbox', { name: 'Enter Your Phone' }).click();
+  await page.getByRole('textbox', { name: 'Enter Your Phone' }).fill('123456789');
+  await page.getByRole('textbox', { name: 'Enter Your Address' }).click();
+  await page.getByRole('textbox', { name: 'Enter Your Address' }).fill('qwerty');
+  await page.getByPlaceholder('Enter Your DOB').fill('2025-03-01');
+  await page.getByRole('textbox', { name: 'What is Your Favorite sports' }).click();
+  await page.getByRole('textbox', { name: 'What is Your Favorite sports' }).fill('qwerty');
+  await page.getByRole('button', { name: 'REGISTER' }).click();
+  await page.getByRole('textbox', { name: 'Enter Your Email' }).fill('testemail0@email.com');
+  await page.getByRole('textbox', { name: 'Enter Your Password' }).click();
+  await page.getByRole('textbox', { name: 'Enter Your Password' }).fill('123456789');
+  await page.getByRole('button', { name: 'LOGIN' }).click();
+  await page.getByRole('button', { name: 'TestName' }).click();
+  await page.getByRole('link', { name: 'Dashboard' }).click();
+  await expect(page.getByText("Dashboard")).toBeVisible();
+    await page.getByRole('link', { name: '🛒 Virtual Vault' }).click();
+    await expect(page.getByText("All Products")).toBeVisible();
+    await page.getByRole('link', { name: 'Home' }).click();
+    await expect(page.getByText("All Products")).toBeVisible();
+    await page.getByRole('link', { name: 'Categories' }).click();
+    await page.locator('#navbarTogglerDemo01').getByRole('link', { name: 'Book' }).click();
+    await expect(page.getByText("Category - Book")).toBeVisible();
+    await page.getByRole('link', { name: 'Categories' }).click();
+    await page.getByRole('link', { name: 'Clothing' }).click();
+    await expect(page.getByText("Category - Clothing")).toBeVisible();
+    await page.getByRole('link', { name: 'Categories' }).click();
+    await page.getByRole('link', { name: 'Electronics' }).click();
+    await expect(page.getByText("Category - Electronics")).toBeVisible();
+    await page.getByRole('link', { name: 'Cart' }).click();
+    await expect(page.getByText("Cart Summary")).toBeVisible();
+  });

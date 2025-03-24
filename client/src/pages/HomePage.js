@@ -187,8 +187,7 @@ const HomePage = () => {
                   "Loading ..."
                 ) : (
                   <>
-                    {" "}
-                    Loadmore <AiOutlineReload />
+                    <span>Load more</span>
                   </>
                 )}
               </button>

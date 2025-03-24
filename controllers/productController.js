@@ -37,7 +37,8 @@ export const createProductController = async (req, res) => {
         return res.status(500).send({ error: "photo is Required and should be less then 1mb" });
     }
 
-    const products = new productModel({ ...req.fields, slug: slugify(name) });
+    const categoryObject = await categoryModel.findOne({ _id: category });
+    const products = new productModel({ ...req.fields, category: categoryObject, slug: slugify(name) });
     if (photo) {
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
@@ -46,7 +47,7 @@ export const createProductController = async (req, res) => {
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
-      products,
+      products: products.toObject(),
     });
   } catch (error) {
     console.log(error);
@@ -66,18 +67,20 @@ export const getProductController = async (req, res) => {
       .populate("category")
       .select("-photo")
       .limit(12)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
     res.status(200).send({
       success: true,
-      counTotal: products.length,
-      message: "ALlProducts ",
+      countTotal: products.length,
+      message: "All Products",
       products,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Erorr in getting products",
+      message: "Error in getting products",
       error: error.message,
     });
   }
@@ -95,7 +98,7 @@ export const getSingleProductController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Eror while getitng single product",
+      message: "Error while getting single product",
       error,
     });
   }

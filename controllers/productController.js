@@ -19,8 +19,7 @@ var gateway = new braintree.BraintreeGateway({
 
 export const createProductController = async (req, res) => {
   try {
-    const { name, description, price, category, quantity, shipping } =
-      req.fields;
+    const { name, description, price, category, quantity, shipping } = req.fields;
     const { photo } = req.files;
     //alidation
     switch (true) {
@@ -35,12 +34,11 @@ export const createProductController = async (req, res) => {
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
       case photo && photo.size > 1000000:
-        return res
-          .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
+        return res.status(500).send({ error: "photo is Required and should be less then 1mb" });
     }
 
-    const products = new productModel({ ...req.fields, slug: slugify(name) });
+    const categoryObject = await categoryModel.findOne({ _id: category });
+    const products = new productModel({ ...req.fields, category: categoryObject, slug: slugify(name) });
     if (photo) {
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
@@ -49,7 +47,7 @@ export const createProductController = async (req, res) => {
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
-      products,
+      products: products.toObject(),
     });
   } catch (error) {
     console.log(error);
@@ -69,18 +67,20 @@ export const getProductController = async (req, res) => {
       .populate("category")
       .select("-photo")
       .limit(12)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
     res.status(200).send({
       success: true,
-      counTotal: products.length,
-      message: "ALlProducts ",
+      countTotal: products.length,
+      message: "All Products",
       products,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Erorr in getting products",
+      message: "Error in getting products",
       error: error.message,
     });
   }
@@ -88,10 +88,7 @@ export const getProductController = async (req, res) => {
 // get single product
 export const getSingleProductController = async (req, res) => {
   try {
-    const product = await productModel
-      .findOne({ slug: req.params.slug })
-      .select("-photo")
-      .populate("category");
+    const product = await productModel.findOne({ slug: req.params.slug }).select("-photo").populate("category");
     res.status(200).send({
       success: true,
       message: "Single Product Fetched",
@@ -101,7 +98,7 @@ export const getSingleProductController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Eror while getitng single product",
+      message: "Error while getting single product",
       error,
     });
   }
@@ -146,8 +143,7 @@ export const deleteProductController = async (req, res) => {
 //upate producta
 export const updateProductController = async (req, res) => {
   try {
-    const { name, description, price, category, quantity, shipping } =
-      req.fields;
+    const { name, description, price, category, quantity, shipping } = req.fields;
     const { photo } = req.files;
     //alidation
     switch (true) {
@@ -162,9 +158,7 @@ export const updateProductController = async (req, res) => {
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
       case photo && photo.size > 1000000:
-        return res
-          .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
+        return res.status(500).send({ error: "photo is Required and should be less then 1mb" });
     }
 
     const products = await productModel.findByIdAndUpdate(
@@ -263,10 +257,7 @@ export const searchProductController = async (req, res) => {
     const { keyword } = req.params;
     const resutls = await productModel
       .find({
-        $or: [
-          { name: { $regex: keyword, $options: "i" } },
-          { description: { $regex: keyword, $options: "i" } },
-        ],
+        $or: [{ name: { $regex: keyword, $options: "i" } }, { description: { $regex: keyword, $options: "i" } }],
       })
       .select("-photo");
     res.json(resutls);

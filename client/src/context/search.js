@@ -1,4 +1,4 @@
-import { useState, useContext, createContext } from "react";
+import React, { useState, useContext, createContext } from "react";
 
 const SearchContext = createContext();
 const SearchProvider = ({ children }) => {
@@ -7,11 +7,7 @@ const SearchProvider = ({ children }) => {
     results: [],
   });
 
-  return (
-    <SearchContext.Provider value={[auth, setAuth]}>
-      {children}
-    </SearchContext.Provider>
-  );
+  return <SearchContext.Provider value={[auth, setAuth]}>{children}</SearchContext.Provider>;
 };
 
 // custom hook

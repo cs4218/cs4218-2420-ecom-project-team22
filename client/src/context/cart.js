@@ -1,4 +1,5 @@
 import { useState, useContext, createContext, useEffect } from "react";
+import React from "react";
 
 const CartContext = createContext();
 const CartProvider = ({ children }) => {
@@ -9,11 +10,7 @@ const CartProvider = ({ children }) => {
     if (existingCartItem) setCart(JSON.parse(existingCartItem));
   }, []);
 
-  return (
-    <CartContext.Provider value={[cart, setCart]}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={[cart, setCart]}>{children}</CartContext.Provider>;
 };
 
 // custom hook

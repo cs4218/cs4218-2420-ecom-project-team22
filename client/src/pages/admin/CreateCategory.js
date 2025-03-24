@@ -18,15 +18,15 @@ const CreateCategory = () => {
       const { data } = await axios.post("/api/v1/category/create-category", {
         name,
       });
-      if (data?.success) {
-        toast.success(`${name} is created`);
+      if (data.success) {
         getAllCategory();
+        toast.success(`${name} is created`);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error("somthing went wrong in input form");
+      toast.error("something went wrong in input form");
     }
   };
 
@@ -36,10 +36,12 @@ const CreateCategory = () => {
       const { data } = await axios.get("/api/v1/category/get-category");
       if (data.success) {
         setCategories(data.category);
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something wwent wrong in getting catgeory");
+      toast.error("Something went wrong in getting the categories");
     }
   };
 
@@ -51,10 +53,7 @@ const CreateCategory = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.put(
-        `/api/v1/category/update-category/${selected._id}`,
-        { name: updatedName }
-      );
+      const { data } = await axios.put(`/api/v1/category/update-category/${selected._id}`, { name: updatedName });
       if (data.success) {
         toast.success(`${updatedName} is updated`);
         setSelected(null);
@@ -65,15 +64,13 @@ const CreateCategory = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error("Somtihing went wrong");
+      toast.error("Something went wrong");
     }
   };
   //delete category
   const handleDelete = async (pId) => {
     try {
-      const { data } = await axios.delete(
-        `/api/v1/category/delete-category/${pId}`
-      );
+      const { data } = await axios.delete(`/api/v1/category/delete-category/${pId}`);
       if (data.success) {
         toast.success(`category is deleted`);
 
@@ -82,7 +79,7 @@ const CreateCategory = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error("Somtihing went wrong");
+      toast.error("Something went wrong");
     }
   };
   return (
@@ -94,12 +91,8 @@ const CreateCategory = () => {
           </div>
           <div className="col-md-9">
             <h1>Manage Category</h1>
-            <div className="p-3 w-50">
-              <CategoryForm
-                handleSubmit={handleSubmit}
-                value={name}
-                setValue={setName}
-              />
+            <div className="p-3 w-50" data-testid="new-category-container">
+              <CategoryForm handleSubmit={handleSubmit} value={name} setValue={setName} />
             </div>
             <div className="w-75">
               <table className="table">
@@ -111,9 +104,9 @@ const CreateCategory = () => {
                 </thead>
                 <tbody>
                   {categories?.map((c) => (
-                    <>
+                    <React.Fragment key={c._id}>
                       <tr>
-                        <td key={c._id}>{c.name}</td>
+                        <td>{c.name}</td>
                         <td>
                           <button
                             className="btn btn-primary ms-2"
@@ -135,21 +128,13 @@ const CreateCategory = () => {
                           </button>
                         </td>
                       </tr>
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
             </div>
-            <Modal
-              onCancel={() => setVisible(false)}
-              footer={null}
-              visible={visible}
-            >
-              <CategoryForm
-                value={updatedName}
-                setValue={setUpdatedName}
-                handleSubmit={handleUpdate}
-              />
+            <Modal onCancel={() => setVisible(false)} footer={null} open={visible}>
+              <CategoryForm value={updatedName} setValue={setUpdatedName} handleSubmit={handleUpdate} />
             </Modal>
           </div>
         </div>

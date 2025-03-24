@@ -20,26 +20,36 @@ const CartPage = () => {
   //total price
   const totalPrice = () => {
     try {
+      if (!cart || cart.length === 0) {
+        return "$0.00";  // Return 0 if cart is empty or undefined
+      }
+  
       let total = 0;
-      cart?.map((item) => {
-        total = total + item.price;
+      cart.forEach((item) => {
+        total += item.price;  // Use forEach as you're not interested in the return value
       });
+  
       return total.toLocaleString("en-US", {
         style: "currency",
         currency: "USD",
       });
     } catch (error) {
-      console.log(error);
+      console.error("Error calculating total price:", error);
+      return "$0.00";  // Return 0 if there's an error
     }
   };
-  //detele item
+  //delete item
   const removeCartItem = (pid) => {
     try {
       let myCart = [...cart];
       let index = myCart.findIndex((item) => item._id === pid);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
+      if (index !== -1) {
+        myCart.splice(index, 1);
+        setCart(myCart);
+        localStorage.setItem("cart", JSON.stringify(myCart));
+      } else {
+        console.log("Item not found in the cart");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -83,14 +93,10 @@ const CartPage = () => {
         <div className="row">
           <div className="col-md-12">
             <h1 className="text-center bg-light p-2 mb-1">
-              {!auth?.user
-                ? "Hello Guest"
-                : `Hello  ${auth?.token && auth?.user?.name}`}
+              {!auth?.user ? "Hello Guest" : `Hello  ${auth?.token && auth?.user?.name}`}
               <p className="text-center">
                 {cart?.length
-                  ? `You Have ${cart.length} items in your cart ${
-                      auth?.token ? "" : "please login to checkout !"
-                    }`
+                  ? `You Have ${cart.length} items in your cart ${auth?.token ? "" : "please login to checkout !"}`
                   : " Your Cart Is Empty"}
               </p>
             </h1>
@@ -116,10 +122,7 @@ const CartPage = () => {
                     <p>Price : {p.price}</p>
                   </div>
                   <div className="col-md-4 cart-remove-btn">
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => removeCartItem(p._id)}
-                    >
+                    <button className="btn btn-danger" onClick={() => removeCartItem(p._id)}>
                       Remove
                     </button>
                   </div>
@@ -136,10 +139,7 @@ const CartPage = () => {
                   <div className="mb-3">
                     <h4>Current Address</h4>
                     <h5>{auth?.user?.address}</h5>
-                    <button
-                      className="btn btn-outline-warning"
-                      onClick={() => navigate("/dashboard/user/profile")}
-                    >
+                    <button className="btn btn-outline-warning" onClick={() => navigate("/dashboard/user/profile")}>
                       Update Address
                     </button>
                   </div>
@@ -147,10 +147,7 @@ const CartPage = () => {
               ) : (
                 <div className="mb-3">
                   {auth?.token ? (
-                    <button
-                      className="btn btn-outline-warning"
-                      onClick={() => navigate("/dashboard/user/profile")}
-                    >
+                    <button className="btn btn-outline-warning" onClick={() => navigate("/dashboard/user/profile")}>
                       Update Address
                     </button>
                   ) : (

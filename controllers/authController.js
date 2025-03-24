@@ -26,6 +26,24 @@ export const registerController = async (req, res) => {
     if (!answer) {
       return res.send({ message: "Answer is Required" });
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid email address",
+      });
+    }
+
+    const phoneRegex = /^\+?[1-9]\d{7,14}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid phone number",
+      });
+    }
+
     //check user
     const exisitingUser = await userModel.findOne({ email });
     //exisiting user
@@ -66,11 +84,20 @@ export const registerController = async (req, res) => {
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    //validation
-    if (!email || !password) {
-      return res.status(404).send({
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).send({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid email address",
+      });
+    }
+
+    //validation
+    if (!password) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid password",
       });
     }
     //check user
@@ -83,7 +110,7 @@ export const loginController = async (req, res) => {
     }
     const match = await comparePassword(password, user.password);
     if (!match) {
-      return res.status(200).send({
+      return res.status(400).send({
         success: false,
         message: "Invalid Password",
       });
@@ -121,7 +148,7 @@ export const forgotPasswordController = async (req, res) => {
   try {
     const { email, answer, newPassword } = req.body;
     if (!email) {
-      res.status(400).send({ message: "Emai is required" });
+      res.status(400).send({ message: "Email is required" });
     }
     if (!answer) {
       res.status(400).send({ message: "answer is required" });
@@ -139,6 +166,12 @@ export const forgotPasswordController = async (req, res) => {
       });
     }
     const hashed = await hashPassword(newPassword);
+    if (hashed === user.password){
+      return res.status(400).send({
+        success: false,
+        message: "New Password is required",
+      });
+    }
     await userModel.findByIdAndUpdate(user._id, { password: hashed });
     res.status(200).send({
       success: true,
@@ -249,11 +282,7 @@ export const orderStatusController = async (req, res) => {
   try {
     const { orderId } = req.params;
     const { status } = req.body;
-    const orders = await orderModel.findByIdAndUpdate(
-      orderId,
-      { status },
-      { new: true }
-    );
+    const orders = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true });
     res.json(orders);
   } catch (error) {
     console.log(error);

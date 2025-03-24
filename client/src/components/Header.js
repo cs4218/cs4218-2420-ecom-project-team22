@@ -47,11 +47,7 @@ const Header = () => {
                 </NavLink>
               </li>
               <li className="nav-item dropdown">
-                <Link
-                  className="nav-link dropdown-toggle"
-                  to={"/categories"}
-                  data-bs-toggle="dropdown"
-                >
+                <Link className="nav-link dropdown-toggle" to={"/categories"} data-bs-toggle="dropdown">
                   Categories
                 </Link>
                 <ul className="dropdown-menu">
@@ -62,10 +58,7 @@ const Header = () => {
                   </li>
                   {categories?.map((c) => (
                     <li>
-                      <Link
-                        className="dropdown-item"
-                        to={`/category/${c.slug}`}
-                      >
+                      <Link className="dropdown-item" to={`/category/${c.slug}`}>
                         {c.name}
                       </Link>
                     </li>
@@ -101,20 +94,14 @@ const Header = () => {
                     <ul className="dropdown-menu">
                       <li>
                         <NavLink
-                          to={`/dashboard/${
-                            auth?.user?.role === 1 ? "admin" : "user"
-                          }`}
+                          to={`/dashboard/${auth?.user?.role === 1 ? "admin" : "user"}`}
                           className="dropdown-item"
                         >
                           Dashboard
                         </NavLink>
                       </li>
                       <li>
-                        <NavLink
-                          onClick={handleLogout}
-                          to="/login"
-                          className="dropdown-item"
-                        >
+                        <NavLink onClick={handleLogout} to="/login" className="dropdown-item">
                           Logout
                         </NavLink>
                       </li>

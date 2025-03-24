@@ -5,6 +5,9 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import toast from "react-hot-toast";
 import Register from "./Register";
+import userModel from "../../../../models/userModel";
+import request from "supertest";
+import app from "../../../server"; 
 
 // Mocking axios.post
 jest.mock("axios");
@@ -154,5 +157,45 @@ describe("Register Component", () => {
 
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
     expect(toast.error).toHaveBeenCalledWith("Something went wrong");
+  });
+});
+
+
+describe("Integration API Login test", () => {
+  it("should register a user successfully", async () => {
+    const res = await request(app).post("/api/register").send({
+      name: "John Doe",
+      email: "test@example.com",
+      password: "password123",
+      phone: "1234567890",
+      address: "123 Street",
+      answer: "Football",
+    });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.success).toBe(true);
+  });
+
+  it("should not register a user with an existing email", async () => {
+    await userModel.create({
+      name: "John Doe",
+      email: "test@example.com",
+      password: "password123",
+      phone: "1234567890",
+      address: "123 Street",
+      answer: "Football",
+    });
+
+    const res = await request(app).post("/api/register").send({
+      name: "John Doe",
+      email: "test@example.com",
+      password: "password123",
+      phone: "1234567890",
+      address: "123 Street",
+      answer: "Football",
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.success).toBe(false);
   });
 });

@@ -17,7 +17,8 @@
     "test:ui:headed": "playwright test --headed",
     "test:ui:debug": "playwright test --debug",
     "test:ui:report": "playwright show-report",
-    "test:ui:interactive": "playwright test --ui"
+    "test:ui:interactive": "playwright test --ui",
+    "test:perf:search": "rm -f ./performance-tests/justus/search_results.jtl && rm -rf ./performance-tests/justus/search_report && jmeter -n -t ./performance-tests/justus/Simple_Product_Search_API_Test.jmx -l ./performance-tests/justus/search_results.jtl -e -o ./performance-tests/justus/search_report"
   },
   "keywords": [],
   "author": "RP",
